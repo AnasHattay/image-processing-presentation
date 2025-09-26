@@ -29,6 +29,19 @@ document.addEventListener('DOMContentLoaded', function() {
   // Define the slide order
   const slideOrder = [
     'intro.html',
+    'functions_intro.html',
+    'function_arguments.html',
+    'anonymous_functions.html',
+    'function_scope.html',
+    'python_decorators_detailed.html',
+    'builtin_classes.html',
+    'python_classes.html',
+    'inheritance.html',
+    'builtin_methods.html',
+    'lets_code.html',
+    'python_decorators.html',
+    'the_problem.html',
+    'getters_setters.html',
     'what_are_data_structures.html',
     'operations.html',
     'comparison.html',
@@ -39,7 +52,7 @@ document.addEventListener('DOMContentLoaded', function() {
     'loop_control.html',
     'list_comprehensions.html',
     'loops_with_data_structures.html',
-    'lets_code.html',
+    'closures.html',
     'memory.html',
     'pass_by_reference.html',
     'conclusion.html'

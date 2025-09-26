@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@400;500;600;700&display=swap');
+    
+    .slide-container {
+      width: 100vw;
+      min-height: 100vh;
+      background: #F2F9FC;
+      color: #858481;
+      font-family: 'SF Pro Display', sans-serif;
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+    }
+    .title {
+      color: #12377A;
+      font-size: 64px;
+      font-weight: 700;
+      font-family: 'Inter', sans-serif;
+      text-shadow: 0 2px 4px rgba(18, 55, 122, 0.1);
+      letter-spacing: -0.02em;
+    }
+    .subtitle {
+      color: #12377A;
+      font-size: 36px;
+      font-weight: 600;
+      font-family: 'Inter', sans-serif;
+      letter-spacing: -0.01em;
+      margin-bottom: 20px;
+      position: relative;
+    }
+    .subtitle::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 0;
+      width: 60px;
+      height: 3px;
+      background: linear-gradient(90deg, #12377A, #1e40af);
+      border-radius: 2px;
+    }
+    .body-text {
+      font-size: 24px;
+      line-height: 1.6;
+      margin-bottom: 20px;
+      color: #4a5568;
+      font-weight: 400;
+    }
+    .code-block {
+      background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+      color: #e8e8e8;
+      padding: 28px;
+      border-radius: 12px;
+      font-family: 'SF Mono', 'Monaco', 'Cascadia Code', 'Roboto Mono', monospace;
+      font-size: 20px;
+      line-height: 1.6;
+      margin: 24px 0;
+      overflow-x: auto;
+      border: 1px solid rgba(18, 55, 122, 0.2);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      position: relative;
+    }
+    .code-block::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #12377A, #1e40af, #3b82f6);
+      border-radius: 12px 12px 0 0;
+    }
+    .code-line {
+      display: block;
+      margin-bottom: 12px;
+      white-space: pre;
+    }
+    .code-line:last-child {
+      margin-bottom: 0;
+    }
+    .code-line.indent-1 {
+      padding-left: 20px;
+    }
+    .code-line.indent-2 {
+      padding-left: 40px;
+    }
+    .code-line.indent-3 {
+      padding-left: 60px;
+    }
+    .highlight {
+      background: linear-gradient(135deg, rgba(18, 55, 122, 0.15) 0%, rgba(30, 64, 175, 0.15) 100%);
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-weight: 700;
+      color: #12377A;
+      border: 1px solid rgba(18, 55, 122, 0.2);
+    }
+    .decorative-line {
+      width: 120px;
+      height: 3px;
+      background: linear-gradient(90deg, #12377A, #1e40af);
+      border-radius: 2px;
+      margin: 0 auto 30px;
+    }
+    .fullscreen-btn {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background-color: rgba(18, 55, 122, 0.9);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 12px 16px;
+      cursor: pointer;
+      font-size: 16px;
+      z-index: 1000;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+    .fullscreen-btn:hover {
+      background-color: rgba(18, 55, 122, 1);
+      transform: scale(1.05);
+    }
+    .fullscreen-btn:active {
+      transform: scale(0.95);
+    }
+    .example-box {
+      background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+      border: 1px solid rgba(18, 55, 122, 0.1);
+      border-radius: 16px;
+      padding: 32px;
+      margin: 28px 0;
+      box-shadow: 0 12px 40px rgba(18, 55, 122, 0.08);
+      position: relative;
+      overflow: hidden;
+    }
+    .example-box::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #12377A, #1e40af, #3b82f6);
+    }
+    .concept-card {
+      display: flex;
+      align-items: center;
+      margin: 20px 0;
+      font-size: 22px;
+      padding: 20px 24px;
+      background: linear-gradient(135deg, rgba(18, 55, 122, 0.03) 0%, rgba(30, 64, 175, 0.03) 100%);
+      border-radius: 12px;
+      border: 1px solid rgba(18, 55, 122, 0.08);
+      transition: all 0.3s ease;
+    }
+    .concept-card:hover {
+      background: linear-gradient(135deg, rgba(18, 55, 122, 0.08) 0%, rgba(30, 64, 175, 0.08) 100%);
+      transform: translateX(8px);
+      box-shadow: 0 4px 16px rgba(18, 55, 122, 0.1);
+    }
+    .concept-icon {
+      color: #12377A;
+      margin-right: 20px;
+      font-size: 28px;
+      background: linear-gradient(135deg, #12377A, #1e40af);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .comparison-table {
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 8px 32px rgba(18, 55, 122, 0.1);
+      margin: 24px 0;
+    }
+    .table-header {
+      background: linear-gradient(135deg, #12377A, #1e40af);
+      color: white;
+      padding: 20px;
+      font-weight: 700;
+      font-size: 20px;
+    }
+    .table-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    .table-cell {
+      padding: 20px;
+      font-size: 18px;
+    }
+    .table-cell:first-child {
+      background: #f8fafc;
+      font-weight: 600;
+      color: #12377A;
+    }
+  </style>
+</head>
+<body>
+  <button class="fullscreen-btn" id="fullscreenBtn" onclick="toggleFullscreen()">
+    <i class="fas fa-expand" id="fullscreenIcon"></i> Fullscreen
+  </button>
+  
+  <div class="slide-container flex flex-col items-center justify-center p-10 relative">
+    <!-- Background decorative elements -->
+    <div class="absolute top-20 left-20 w-32 h-32 rounded-full bg-gradient-to-br from-blue-100 to-blue-200 opacity-20 animate-pulse"></div>
+    <div class="absolute bottom-20 right-20 w-24 h-24 rounded-full bg-gradient-to-br from-blue-200 to-blue-300 opacity-30 animate-pulse" style="animation-delay: 1s;"></div>
+    <div class="absolute top-1/3 right-1/4 w-16 h-16 rounded-full bg-gradient-to-br from-blue-50 to-blue-100 opacity-25 animate-pulse" style="animation-delay: 2s;"></div>
+    <div class="absolute top-1/2 left-1/4 w-8 h-8 rounded-full bg-gradient-to-br from-indigo-100 to-indigo-200 opacity-30 animate-pulse" style="animation-delay: 0.5s;"></div>
+    <div class="absolute bottom-1/3 left-1/3 w-12 h-12 rounded-full bg-gradient-to-br from-purple-100 to-purple-200 opacity-20 animate-pulse" style="animation-delay: 1.5s;"></div>
+    
+    <div class="max-w-6xl w-full relative z-10">
+      <div class="text-center mb-16">
+        <div class="inline-block">
+          <h1 class="title mb-6">Getters and Setters</h1>
+          <div class="decorative-line mb-8"></div>
+          <p class="text-2xl text-gray-600 font-light italic">The Solution to Attribute Chaos!</p>
+        </div>
+      </div>
+      
+      <!-- Solution Demonstration -->
+      <div class="mt-16">
+        <div class="example-box">
+          <div class="text-center mb-8">
+            <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-green-500 to-green-600 rounded-full mb-4">
+              <i class="fas fa-shield-alt text-white text-2xl"></i>
+            </div>
+            <h3 class="text-3xl font-bold text-green-600 mb-2">The Solution in Action</h3>
+            <p class="text-lg text-gray-600 font-light">Watch how Getters & Setters protect your attributes!</p>
+          </div>
+          
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- Protected Code -->
+            <div class="bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 rounded-lg p-6">
+              <h4 class="text-lg font-bold text-green-700 mb-4 flex items-center">
+                <i class="fas fa-shield-alt mr-2"></i>
+                Protected Code (With Getters/Setters)
+              </h4>
+              <div class="code-block" style="margin: 0; padding: 16px; font-size: 16px;">
+                <span class="code-line">class Person:</span>
+                <span class="code-line indent-1">def __init__(self, name, age):</span>
+                <span class="code-line indent-2">self._name = name</span>
+                <span class="code-line indent-2">self._age = age</span>
+                <span class="code-line indent-1">@property</span>
+                <span class="code-line indent-1">def name(self):</span>
+                <span class="code-line indent-2">return self._name</span>
+                <span class="code-line indent-1">@name.setter</span>
+                <span class="code-line indent-1">def name(self, value):</span>
+                <span class="code-line indent-2">if not value or len(value.strip()) == 0:</span>
+                <span class="code-line indent-3">raise ValueError("Name cannot be empty")</span>
+                <span class="code-line indent-2">self._name = value.strip()</span>
+                <span class="code-line indent-1">@property</span>
+                <span class="code-line indent-1">def age(self):</span>
+                <span class="code-line indent-2">return self._age</span>
+                <span class="code-line indent-1">@age.setter</span>
+                <span class="code-line indent-1">def age(self, value):</span>
+                <span class="code-line indent-2">if not isinstance(value, int) or value < 0:</span>
+                <span class="code-line indent-3">raise ValueError("Age must be positive integer")</span>
+                <span class="code-line indent-2">self._age = value</span>
+              </div>
+              <div class="mt-4 text-green-600 font-semibold animate-pulse">
+                🛡️ Validation protects every change!
+              </div>
+            </div>
+            
+            <!-- The Protection -->
+            <div class="bg-gradient-to-r from-blue-50 to-indigo-50 border-2 border-blue-200 rounded-lg p-6">
+              <h4 class="text-lg font-bold text-blue-700 mb-4 flex items-center">
+                <i class="fas fa-check-circle mr-2"></i>
+                The Protection in Action
+              </h4>
+              <div class="code-block" style="margin: 0; padding: 16px; font-size: 16px;">
+                <span class="code-line">person = Person("Alice", 25)</span>
+                <span class="code-line">print(f"Before: {person.name}, {person.age}")</span>
+                <span class="code-line"></span>
+                <span class="code-line"># User tries to modify attributes</span>
+                <span class="code-line">try:</span>
+                <span class="code-line indent-1">person.name = ""  # 🛡️ ValueError!</span>
+                <span class="code-line">except ValueError as e:</span>
+                <span class="code-line indent-1">print(f"Error: {e}")</span>
+                <span class="code-line"></span>
+                <span class="code-line">try:</span>
+                <span class="code-line indent-1">person.age = -5  # 🛡️ ValueError!</span>
+                <span class="code-line">except ValueError as e:</span>
+                <span class="code-line indent-1">print(f"Error: {e}")</span>
+                <span class="code-line"></span>
+                <span class="code-line"># Only valid changes work</span>
+                <span class="code-line">person.name = "Alice Smith"  # ✅ Works!</span>
+                <span class="code-line">person.age = 30  # ✅ Works!</span>
+                <span class="code-line">print(f"After: {person.name}, {person.age}")</span>
+              </div>
+              <div class="mt-4 text-blue-600 font-semibold animate-pulse">
+                ✅ Data stays clean and safe!
+              </div>
+            </div>
+          </div>
+          
+          <!-- Animation Sequence -->
+          <div class="mt-8 bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 rounded-lg p-6">
+            <h4 class="text-lg font-bold text-green-700 mb-4 text-center">The Protection in Action</h4>
+            <div class="flex justify-center items-center space-x-8">
+              <div class="text-center">
+                <div class="w-16 h-16 bg-red-500 rounded-full flex items-center justify-center mb-2 animate-bounce">
+                  <i class="fas fa-user-edit text-white text-2xl"></i>
+                </div>
+                <p class="text-sm font-semibold text-red-600">User tries to<br>modify attribute</p>
+              </div>
+              
+              <div class="text-2xl animate-pulse">→</div>
+              
+              <div class="text-center">
+                <div class="w-16 h-16 bg-yellow-500 rounded-full flex items-center justify-center mb-2 animate-spin">
+                  <i class="fas fa-shield-alt text-white text-2xl"></i>
+                </div>
+                <p class="text-sm font-semibold text-yellow-600">Setter<br>validates</p>
+              </div>
+              
+              <div class="text-2xl animate-pulse">→</div>
+              
+              <div class="text-center">
+                <div class="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mb-2 animate-pulse">
+                  <i class="fas fa-check text-white text-2xl"></i>
+                </div>
+                <p class="text-sm font-semibold text-green-600">Data stays<br>clean & safe</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <!-- Left Column: What are Getters/Setters -->
+        <div class="space-y-6">
+          <div>
+            <h2 class="subtitle">What are Getters & Setters?</h2>
+            <p class="body-text">
+              <span class="highlight">Getters and Setters</span> are methods that control how attributes are accessed and modified, providing data validation and encapsulation.
+            </p>
+          </div>
+          
+          <div class="space-y-4">
+            <div class="concept-card">
+              <i class="fas fa-eye concept-icon"></i>
+              <span><strong>Getter:</strong> Method to read/access an attribute</span>
+            </div>
+            <div class="concept-card">
+              <i class="fas fa-edit concept-icon"></i>
+              <span><strong>Setter:</strong> Method to modify/change an attribute</span>
+            </div>
+            <div class="concept-card">
+              <i class="fas fa-shield-alt concept-icon"></i>
+              <span><strong>Validation:</strong> Control what values are allowed</span>
+            </div>
+            <div class="concept-card">
+              <i class="fas fa-lock concept-icon"></i>
+              <span><strong>Encapsulation:</strong> Hide internal implementation</span>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Right Column: Why Use Them -->
+        <div class="space-y-6">
+          <div>
+            <h2 class="subtitle">Why Use Getters & Setters?</h2>
+            <div class="space-y-4">
+              <div class="concept-card">
+                <i class="fas fa-check-circle concept-icon"></i>
+                <span><strong>Data Validation:</strong> Ensure only valid values are stored</span>
+              </div>
+              <div class="concept-card">
+                <i class="fas fa-calculator concept-icon"></i>
+                <span><strong>Computed Values:</strong> Calculate attributes on-the-fly</span>
+              </div>
+              <div class="concept-card">
+                <i class="fas fa-history concept-icon"></i>
+                <span><strong>Logging:</strong> Track when attributes are accessed/changed</span>
+              </div>
+              <div class="concept-card">
+                <i class="fas fa-cog concept-icon"></i>
+                <span><strong>Flexibility:</strong> Change implementation without breaking code</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      
+      <!-- Basic Example -->
+      <div class="mt-16">
+        <div class="example-box">
+          <div class="text-center mb-8">
+            <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-[#12377A] to-[#1e40af] rounded-full mb-4">
+              <i class="fas fa-thermometer-half text-white text-2xl"></i>
+            </div>
+            <h3 class="text-3xl font-bold text-[#12377A] mb-2">Basic Example: Temperature Class</h3>
+            <p class="text-lg text-gray-600 font-light">Using @property for getters and setters</p>
+          </div>
+          
+          <div class="code-block">
+            <span class="code-line">class Temperature:</span>
+            <span class="code-line indent-1">def __init__(self, celsius=0):</span>
+            <span class="code-line indent-2">self._celsius = celsius  # Private attribute</span>
+            <span class="code-line indent-1">@property</span>
+            <span class="code-line indent-1">def celsius(self):</span>
+            <span class="code-line indent-2">"""Getter for celsius temperature"""</span>
+            <span class="code-line indent-2">return self._celsius</span>
+            <span class="code-line indent-1">@celsius.setter</span>
+            <span class="code-line indent-1">def celsius(self, value):</span>
+            <span class="code-line indent-2">"""Setter for celsius temperature"""</span>
+            <span class="code-line indent-2">if value < -273.15:</span>
+            <span class="code-line indent-3">raise ValueError("Temperature below absolute zero!")</span>
+            <span class="code-line indent-2">self._celsius = value</span>
+            <span class="code-line indent-1">@property</span>
+            <span class="code-line indent-1">def fahrenheit(self):</span>
+            <span class="code-line indent-2">"""Computed property for fahrenheit"""</span>
+            <span class="code-line indent-2">return self._celsius * 9/5 + 32</span>
+            <span class="code-line"></span>
+            <span class="code-line"># Usage</span>
+            <span class="code-line">temp = Temperature(25)</span>
+            <span class="code-line">print(temp.celsius)     # 25 (getter)</span>
+            <span class="code-line">print(temp.fahrenheit)  # 77.0 (computed)</span>
+            <span class="code-line">temp.celsius = 30       # setter</span>
+            <span class="code-line">print(temp.fahrenheit)  # 86.0</span>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Advanced Example -->
+      <div class="mt-16">
+        <div class="example-box">
+          <div class="text-center mb-8">
+            <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-[#12377A] to-[#1e40af] rounded-full mb-4">
+              <i class="fas fa-user text-white text-2xl"></i>
+            </div>
+            <h3 class="text-3xl font-bold text-[#12377A] mb-2">Advanced Example: Person Class</h3>
+            <p class="text-lg text-gray-600 font-light">Multiple getters and setters with validation</p>
+          </div>
+          
+          <div class="code-block">
+            <span class="code-line">class Person:</span>
+            <span class="code-line indent-1">def __init__(self, name, age):</span>
+            <span class="code-line indent-2">self._name = name</span>
+            <span class="code-line indent-2">self._age = age</span>
+            <span class="code-line indent-1">@property</span>
+            <span class="code-line indent-1">def name(self):</span>
+            <span class="code-line indent-2">return self._name.title()  # Always capitalize</span>
+            <span class="code-line indent-1">@name.setter</span>
+            <span class="code-line indent-1">def name(self, value):</span>
+            <span class="code-line indent-2">if not isinstance(value, str):</span>
+            <span class="code-line indent-3">raise TypeError("Name must be a string")</span>
+            <span class="code-line indent-2">if len(value.strip()) == 0:</span>
+            <span class="code-line indent-3">raise ValueError("Name cannot be empty")</span>
+            <span class="code-line indent-2">self._name = value.strip()</span>
+            <span class="code-line indent-1">@property</span>
+            <span class="code-line indent-1">def age(self):</span>
+            <span class="code-line indent-2">return self._age</span>
+            <span class="code-line indent-1">@age.setter</span>
+            <span class="code-line indent-1">def age(self, value):</span>
+            <span class="code-line indent-2">if not isinstance(value, int):</span>
+            <span class="code-line indent-3">raise TypeError("Age must be an integer")</span>
+            <span class="code-line indent-2">if value < 0 or value > 150:</span>
+            <span class="code-line indent-3">raise ValueError("Age must be between 0 and 150")</span>
+            <span class="code-line indent-2">self._age = value</span>
+            <span class="code-line indent-1">@property</span>
+            <span class="code-line indent-1">def is_adult(self):</span>
+            <span class="code-line indent-2">return self._age >= 18</span>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Problem vs Solution Comparison -->
+      <div class="mt-16">
+        <div class="example-box">
+          <div class="text-center mb-8">
+            <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-[#12377A] to-[#1e40af] rounded-full mb-4">
+              <i class="fas fa-balance-scale text-white text-2xl"></i>
+            </div>
+            <h3 class="text-3xl font-bold text-[#12377A] mb-2">Problem vs Solution</h3>
+            <p class="text-lg text-gray-600 font-light">How Getters & Setters solve the attribute modification chaos</p>
+          </div>
+          
+          <div class="comparison-table">
+            <div class="table-header text-center">The Problem vs The Solution</div>
+            <div class="table-row">
+              <div class="table-cell">Aspect</div>
+              <div class="table-cell">❌ Direct Access (Problem)</div>
+              <div class="table-cell">✅ Getters/Setters (Solution)</div>
+            </div>
+            <div class="table-row">
+              <div class="table-cell">Attribute Modification</div>
+              <div class="table-cell">person.age = -5  # 😱 Accepted!</div>
+              <div class="table-cell">person.age = -5  # 🛡️ ValueError!</div>
+            </div>
+            <div class="table-row">
+              <div class="table-cell">Data Validation</div>
+              <div class="table-cell">❌ No validation possible</div>
+              <div class="table-cell">✅ Full validation on every change</div>
+            </div>
+            <div class="table-row">
+              <div class="table-cell">Error Prevention</div>
+              <div class="table-cell">❌ Bad data gets stored</div>
+              <div class="table-cell">✅ Bad data gets rejected</div>
+            </div>
+            <div class="table-row">
+              <div class="table-cell">Data Integrity</div>
+              <div class="table-cell">❌ Compromised easily</div>
+              <div class="table-cell">✅ Always maintained</div>
+            </div>
+            <div class="table-row">
+              <div class="table-cell">User Experience</div>
+              <div class="table-cell">❌ Silent failures</div>
+              <div class="table-cell">✅ Clear error messages</div>
+            </div>
+            <div class="table-row">
+              <div class="table-cell">System Reliability</div>
+              <div class="table-cell">❌ Unpredictable behavior</div>
+              <div class="table-cell">✅ Predictable and stable</div>
+            </div>
+          </div>
+          
+          <div class="comparison-table" style="margin-top: 20px;">
+            <div class="table-header text-center">Getters/Setters Benefits</div>
+            <div class="table-row">
+              <div class="table-cell">Aspect</div>
+              <div class="table-cell">Getters/Setters</div>
+            </div>
+            <div class="table-row">
+              <div class="table-cell">Validation</div>
+              <div class="table-cell">✅ Full control over input validation</div>
+            </div>
+            <div class="table-row">
+              <div class="table-cell">Flexibility</div>
+              <div class="table-cell">✅ Easy to modify implementation</div>
+            </div>
+            <div class="table-row">
+              <div class="table-cell">Computed Values</div>
+              <div class="table-cell">✅ Calculate on-the-fly</div>
+            </div>
+            <div class="table-row">
+              <div class="table-cell">Error Handling</div>
+              <div class="table-cell">✅ Custom error messages</div>
+            </div>
+            <div class="table-row">
+              <div class="table-cell">Encapsulation</div>
+              <div class="table-cell">✅ Hide internal implementation</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+function toggleFullscreen() {
+  const btn = document.getElementById('fullscreenBtn');
+  const icon = document.getElementById('fullscreenIcon');
+  
+  if (!document.fullscreenElement) {
+    // Enter fullscreen
+    document.documentElement.requestFullscreen().then(() => {
+      icon.className = 'fas fa-compress';
+      btn.innerHTML = '<i class="fas fa-compress"></i> Exit Fullscreen';
+    }).catch(err => {
+      console.log('Error attempting to enable fullscreen:', err.message);
+    });
+  } else {
+    // Exit fullscreen
+    document.exitFullscreen().then(() => {
+      icon.className = 'fas fa-expand';
+      btn.innerHTML = '<i class="fas fa-expand"></i> Fullscreen';
+    }).catch(err => {
+      console.log('Error attempting to exit fullscreen:', err.message);
+    });
+  }
+}
+
+// Listen for fullscreen changes (e.g., when user presses ESC)
+document.addEventListener('fullscreenchange', () => {
+  const btn = document.getElementById('fullscreenBtn');
+  const icon = document.getElementById('fullscreenIcon');
+  
+  if (!document.fullscreenElement) {
+    icon.className = 'fas fa-expand';
+    btn.innerHTML = '<i class="fas fa-expand"></i> Fullscreen';
+  } else {
+    icon.className = 'fas fa-compress';
+    btn.innerHTML = '<i class="fas fa-compress"></i> Fullscreen';
+  }
+});
+</script>
+<script src="navigation.js"></script>
+</body>
+</html>

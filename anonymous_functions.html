@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@400;500;600;700&display=swap');
+    
+    .slide-container {
+      width: 100vw;
+      min-height: 100vh;
+      background: #F2F9FC;
+      color: #858481;
+      font-family: 'SF Pro Display', sans-serif;
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+    }
+    .title {
+      color: #12377A;
+      font-size: 64px;
+      font-weight: 700;
+      font-family: 'Inter', sans-serif;
+      text-shadow: 0 2px 4px rgba(18, 55, 122, 0.1);
+      letter-spacing: -0.02em;
+    }
+    .subtitle {
+      color: #12377A;
+      font-size: 36px;
+      font-weight: 600;
+      font-family: 'Inter', sans-serif;
+      letter-spacing: -0.01em;
+      margin-bottom: 20px;
+      position: relative;
+    }
+    .subtitle::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 0;
+      width: 60px;
+      height: 3px;
+      background: linear-gradient(90deg, #12377A, #1e40af);
+      border-radius: 2px;
+    }
+    .body-text {
+      font-size: 24px;
+      line-height: 1.6;
+      margin-bottom: 20px;
+      color: #4a5568;
+      font-weight: 400;
+    }
+    .code-block {
+      background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+      color: #e8e8e8;
+      padding: 28px;
+      border-radius: 12px;
+      font-family: 'SF Mono', 'Monaco', 'Cascadia Code', 'Roboto Mono', monospace;
+      font-size: 20px;
+      line-height: 1.6;
+      margin: 24px 0;
+      overflow-x: auto;
+      border: 1px solid rgba(18, 55, 122, 0.2);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      position: relative;
+    }
+    .code-block::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #12377A, #1e40af, #3b82f6);
+      border-radius: 12px 12px 0 0;
+    }
+    .code-line {
+      display: block;
+      margin-bottom: 12px;
+      white-space: pre;
+    }
+    .code-line:last-child {
+      margin-bottom: 0;
+    }
+    .code-line.indent-1 {
+      padding-left: 20px;
+    }
+    .code-line.indent-2 {
+      padding-left: 40px;
+    }
+    .code-line.indent-3 {
+      padding-left: 60px;
+    }
+    .highlight {
+      background: linear-gradient(135deg, rgba(18, 55, 122, 0.15) 0%, rgba(30, 64, 175, 0.15) 100%);
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-weight: 700;
+      color: #12377A;
+      border: 1px solid rgba(18, 55, 122, 0.2);
+    }
+    .decorative-line {
+      width: 120px;
+      height: 3px;
+      background: linear-gradient(90deg, #12377A, #1e40af);
+      border-radius: 2px;
+      margin: 0 auto 30px;
+    }
+    .fullscreen-btn {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background-color: rgba(18, 55, 122, 0.9);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 12px 16px;
+      cursor: pointer;
+      font-size: 16px;
+      z-index: 1000;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+    .fullscreen-btn:hover {
+      background-color: rgba(18, 55, 122, 1);
+      transform: scale(1.05);
+    }
+    .fullscreen-btn:active {
+      transform: scale(0.95);
+    }
+    .example-box {
+      background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+      border: 1px solid rgba(18, 55, 122, 0.1);
+      border-radius: 16px;
+      padding: 32px;
+      margin: 28px 0;
+      box-shadow: 0 12px 40px rgba(18, 55, 122, 0.08);
+      position: relative;
+      overflow: hidden;
+    }
+    .example-box::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #12377A, #1e40af, #3b82f6);
+    }
+    .lambda-feature {
+      display: flex;
+      align-items: center;
+      margin: 20px 0;
+      font-size: 22px;
+      padding: 20px 24px;
+      background: linear-gradient(135deg, rgba(18, 55, 122, 0.03) 0%, rgba(30, 64, 175, 0.03) 100%);
+      border-radius: 12px;
+      border: 1px solid rgba(18, 55, 122, 0.08);
+      transition: all 0.3s ease;
+    }
+    .lambda-feature:hover {
+      background: linear-gradient(135deg, rgba(18, 55, 122, 0.08) 0%, rgba(30, 64, 175, 0.08) 100%);
+      transform: translateX(8px);
+      box-shadow: 0 4px 16px rgba(18, 55, 122, 0.1);
+    }
+    .lambda-icon {
+      color: #12377A;
+      margin-right: 20px;
+      font-size: 28px;
+      background: linear-gradient(135deg, #12377A, #1e40af);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .comparison-table {
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 8px 32px rgba(18, 55, 122, 0.1);
+      margin: 24px 0;
+    }
+    .table-header {
+      background: linear-gradient(135deg, #12377A, #1e40af);
+      color: white;
+      padding: 20px;
+      font-weight: 700;
+      font-size: 20px;
+    }
+    .table-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    .table-cell {
+      padding: 20px;
+      font-size: 18px;
+    }
+    .table-cell:first-child {
+      background: #f8fafc;
+      font-weight: 600;
+      color: #12377A;
+    }
+  </style>
+</head>
+<body>
+  <button class="fullscreen-btn" id="fullscreenBtn" onclick="toggleFullscreen()">
+    <i class="fas fa-expand" id="fullscreenIcon"></i> Fullscreen
+  </button>
+  
+  <div class="slide-container flex flex-col items-center justify-center p-10 relative">
+    <!-- Background decorative elements -->
+    <div class="absolute top-20 left-20 w-32 h-32 rounded-full bg-gradient-to-br from-blue-100 to-blue-200 opacity-20 animate-pulse"></div>
+    <div class="absolute bottom-20 right-20 w-24 h-24 rounded-full bg-gradient-to-br from-blue-200 to-blue-300 opacity-30 animate-pulse" style="animation-delay: 1s;"></div>
+    <div class="absolute top-1/3 right-1/4 w-16 h-16 rounded-full bg-gradient-to-br from-blue-50 to-blue-100 opacity-25 animate-pulse" style="animation-delay: 2s;"></div>
+    <div class="absolute top-1/2 left-1/4 w-8 h-8 rounded-full bg-gradient-to-br from-indigo-100 to-indigo-200 opacity-30 animate-pulse" style="animation-delay: 0.5s;"></div>
+    <div class="absolute bottom-1/3 left-1/3 w-12 h-12 rounded-full bg-gradient-to-br from-purple-100 to-purple-200 opacity-20 animate-pulse" style="animation-delay: 1.5s;"></div>
+    
+    <div class="max-w-6xl w-full relative z-10">
+      <div class="text-center mb-16">
+        <div class="inline-block">
+          <h1 class="title mb-6">Anonymous Functions</h1>
+          <div class="decorative-line mb-8"></div>
+          <p class="text-2xl text-gray-600 font-light italic">Lambda Functions in Python</p>
+        </div>
+      </div>
+      
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <!-- Left Column: What are Lambda Functions -->
+        <div class="space-y-6">
+          <div>
+            <h2 class="subtitle">What are Lambda Functions?</h2>
+            <p class="body-text">
+              <span class="highlight">Lambda functions</span> are small, anonymous functions that can have any number of arguments, but only one expression.
+            </p>
+          </div>
+          
+          <div class="example-box">
+            <div class="flex items-center mb-6">
+              <div class="w-3 h-3 bg-gradient-to-r from-[#12377A] to-[#1e40af] rounded-full mr-3"></div>
+              <h3 class="text-2xl font-bold text-[#12377A]">Basic Syntax</h3>
+            </div>
+            <div class="code-block">
+              <span class="code-line"># Regular function</span>
+              <span class="code-line">def square(x):</span>
+              <span class="code-line indent-1">return x * x</span>
+              <span class="code-line"></span>
+              <span class="code-line"># Lambda function</span>
+              <span class="code-line">square = lambda x: x * x</span>
+              <span class="code-line"></span>
+              <span class="code-line">print(square(5))  # Output: 25</span>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Right Column: Lambda Features -->
+        <div class="space-y-6">
+          <div>
+            <h2 class="subtitle">Motivation Behind</h2>
+            <div class="space-y-4">
+              <div class="lambda-feature">
+                <i class="fas fa-bolt lambda-icon"></i>
+                <span><strong>One-liner:</strong> Single expression only</span>
+              </div>
+              <div class="lambda-feature">
+                <i class="fas fa-user-secret lambda-icon"></i>
+                <span><strong>Anonymous:</strong> No function name needed</span>
+              </div>
+              <div class="lambda-feature">
+                <i class="fas fa-rocket lambda-icon"></i>
+                <span><strong>Inline:</strong> Can be used directly in code</span>
+              </div>
+              <div class="lambda-feature">
+                <i class="fas fa-filter lambda-icon"></i>
+                <span><strong>Functional:</strong> Perfect for sorted, filter</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Lambda Function Components Animation -->
+      <div class="mt-16">
+        <div class="example-box">
+          <div class="text-center mb-4">
+            <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-[#12377A] to-[#1e40af] rounded-full mb-4">
+              <i class="fas fa-cube text-white text-2xl"></i>
+            </div>
+            <h3 class="text-3xl font-bold text-[#12377A] mb-2">Lambda Function Components</h3>
+          </div>
+          
+          <!-- Lambda Components Diagram -->
+          <div class="flex justify-center items-center my-20 px-8">
+            <div class="relative w-full max-w-7xl">
+              <!-- Main lambda code box -->
+              <div class="bg-gradient-to-r from-gray-900 to-black text-green-400 text-3xl font-mono px-10 py-6 rounded-xl border-4 border-green-500 shadow-2xl mx-auto w-fit">
+                <span class="text-blue-400">f</span> = <span class="text-green-400">lambda</span> <span class="text-yellow-400">a</span>: <span class="text-purple-400">a * a</span>
+              </div>
+              
+              <!-- Variable Assignment arrow (f) -->
+              <div class="absolute -bottom-20 left-1/2 transform -translate-x-1/2">
+                <div class="flex flex-col items-center">
+                  <div class="w-0 h-0 border-l-8 border-r-8 border-b-12 border-l-transparent border-r-transparent border-b-blue-500"></div>
+                  <div class="bg-gradient-to-r from-blue-50 to-indigo-50 border-2 border-blue-400 rounded-lg px-6 py-3 mt-2 text-center shadow-lg">
+                    <div class="text-lg font-bold text-blue-800">Variable Assignment</div>
+                    <div class="text-sm text-blue-700">Stores the function object</div>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Lambda keyword arrow -->
+              <div class="absolute -top-20 left-1/2 transform -translate-x-1/2">
+                <div class="flex flex-col items-center">
+                  <div class="bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-400 rounded-lg px-6 py-3 mb-2 text-center shadow-lg">
+                    <div class="text-lg font-bold text-green-800">Lambda Keyword</div>
+                    <div class="text-sm text-green-700">Creates anonymous function</div>
+                  </div>
+                  <div class="w-0 h-0 border-l-8 border-r-8 border-t-12 border-l-transparent border-r-transparent border-t-green-500"></div>
+                </div>
+              </div>
+              
+              <!-- Parameter arrow (a) -->
+              <div class="absolute top-1/2 -left-64 transform -translate-y-1/2">
+                <div class="flex items-center">
+                  <div class="bg-gradient-to-r from-yellow-50 to-orange-50 border-2 border-yellow-400 rounded-lg px-6 py-3 text-center shadow-lg mr-4">
+                    <div class="text-lg font-bold text-yellow-800">Parameter</div>
+                    <div class="text-sm text-yellow-700">Input variable</div>
+                  </div>
+                  <div class="w-0 h-0 border-t-4 border-b-4 border-r-8 border-t-transparent border-b-transparent border-r-yellow-500"></div>
+                </div>
+              </div>
+              
+              <!-- Expression arrow (a * a) -->
+              <div class="absolute top-1/2 -right-64 transform -translate-y-1/2">
+                <div class="flex items-center">
+                  <div class="w-0 h-0 border-t-4 border-b-4 border-l-8 border-t-transparent border-b-transparent border-l-purple-500"></div>
+                  <div class="bg-gradient-to-r from-purple-50 to-pink-50 border-2 border-purple-400 rounded-lg px-6 py-3 text-center shadow-lg ml-4">
+                    <div class="text-lg font-bold text-purple-800">Expression</div>
+                    <div class="text-sm text-purple-700">What gets returned</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Interactive explanation -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-12">
+            <div class="bg-gradient-to-r from-blue-50 to-indigo-50 border-l-4 border-blue-400 p-6 rounded-lg">
+              <h4 class="text-xl font-bold text-blue-800 mb-4">🔤 Variable Assignment</h4>
+              <p class="text-lg text-blue-700 mb-4">
+                <strong>f</strong> stores the lambda function object, just like any other variable.
+              </p>
+              <div class="code-block">
+                <span class="code-line">f = lambda a: a * a</span>
+                <span class="code-line">print(f(5))  # 25</span>
+              </div>
+            </div>
+            
+            <div class="bg-gradient-to-r from-green-50 to-emerald-50 border-l-4 border-green-400 p-6 rounded-lg">
+              <h4 class="text-xl font-bold text-green-800 mb-4">⚡ Lambda Keyword</h4>
+              <p class="text-lg text-green-700 mb-4">
+                <strong>lambda</strong> tells Python this is an anonymous function.
+              </p>
+              <div class="code-block">
+                <span class="code-line"># Same as: def f(a): return a * a</span>
+                <span class="code-line">f = lambda a: a * a</span>
+              </div>
+            </div>
+            
+            <div class="bg-gradient-to-r from-yellow-50 to-orange-50 border-l-4 border-yellow-400 p-6 rounded-lg">
+              <h4 class="text-xl font-bold text-yellow-800 mb-4">📥 Parameter</h4>
+              <p class="text-lg text-yellow-700 mb-4">
+                <strong>a</strong> is the parameter that receives the input value.
+              </p>
+              <div class="code-block">
+                <span class="code-line">f(5)  # a = 5</span>
+                <span class="code-line">f(10) # a = 10</span>
+              </div>
+            </div>
+            
+            <div class="bg-gradient-to-r from-purple-50 to-pink-50 border-l-4 border-purple-400 p-6 rounded-lg">
+              <h4 class="text-xl font-bold text-purple-800 mb-4">🎯 Expression</h4>
+              <p class="text-lg text-purple-700 mb-4">
+                <strong>a * a</strong> is the single expression that gets evaluated and returned.
+              </p>
+              <div class="code-block">
+                <span class="code-line"># Only one expression allowed!</span>
+                <span class="code-line">lambda a: a * a  # ✅</span>
+                <span class="code-line">lambda a: a * a; print(a)  # ❌</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Common Use Cases -->
+      <div class="mt-16">
+        <div class="example-box">
+          <div class="text-center mb-8">
+            <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-[#12377A] to-[#1e40af] rounded-full mb-4">
+              <i class="fas fa-code text-white text-2xl"></i>
+            </div>
+            <h3 class="text-3xl font-bold text-[#12377A] mb-2">Common Use Cases</h3>
+            <p class="text-lg text-gray-600 font-light">Lambda functions with built-in functions</p>
+          </div>
+          
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div>
+              <h4 class="text-xl font-semibold text-[#12377A] mb-4">With filter()</h4>
+              <div class="code-block">
+                <span class="code-line">numbers = [1, 2, 3, 4, 5, 6]</span>
+                <span class="code-line">evens = list(filter(lambda x: x % 2 == 0, numbers))</span>
+                <span class="code-line">print(evens)  # [2, 4, 6]</span>
+              </div>
+            </div>
+            
+            <div>
+              <h4 class="text-xl font-semibold text-[#12377A] mb-4">With sorted()</h4>
+              <div class="code-block">
+                <span class="code-line">students = [("Alice", 85), ("Bob", 92)]</span>
+                <span class="code-line">sorted_by_grade = sorted(students, key=lambda x: x[1])</span>
+                <span class="code-line">print(sorted_by_grade)</span>
+              </div>
+            </div>
+            
+            <div>
+              <h4 class="text-xl font-semibold text-[#12377A] mb-4">Multiple Arguments</h4>
+              <div class="code-block">
+                <span class="code-line">add = lambda x, y: x + y</span>
+                <span class="code-line">result = add(3, 5)</span>
+                <span class="code-line">print(result)  # 8</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      
+      <!-- When to Use Lambda -->
+      <div class="mt-16">
+        <div class="example-box">
+          <div class="text-center mb-8">
+            <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-[#12377A] to-[#1e40af] rounded-full mb-4">
+              <i class="fas fa-balance-scale text-white text-2xl"></i>
+            </div>
+            <h3 class="text-3xl font-bold text-[#12377A] mb-2">When to Use Lambda</h3>
+            <p class="text-lg text-gray-600 font-light">Lambda vs Regular Functions</p>
+          </div>
+          
+          <div class="comparison-table">
+            <div class="table-header text-center">Lambda vs Regular Functions</div>
+            <div class="table-row">
+              <div class="table-cell">Use Lambda When:</div>
+              <div class="table-cell">Use Regular Functions When:</div>
+            </div>
+            <div class="table-row">
+              <div class="table-cell">Simple one-line operations</div>
+              <div class="table-cell">Complex logic with multiple statements</div>
+            </div>
+            <div class="table-row">
+              <div class="table-cell">Short-term, throwaway functions</div>
+              <div class="table-cell">Functions you'll reuse multiple times</div>
+            </div>
+            <div class="table-row">
+              <div class="table-cell">With map(), filter(), sorted()</div>
+              <div class="table-cell">Need docstrings or complex logic</div>
+            </div>
+            <div class="table-row">
+              <div class="table-cell">lambda x: x * 2</div>
+              <div class="table-cell">def process_data(data): ...</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+function toggleFullscreen() {
+  const btn = document.getElementById('fullscreenBtn');
+  const icon = document.getElementById('fullscreenIcon');
+  
+  if (!document.fullscreenElement) {
+    // Enter fullscreen
+    document.documentElement.requestFullscreen().then(() => {
+      icon.className = 'fas fa-compress';
+      btn.innerHTML = '<i class="fas fa-compress"></i> Exit Fullscreen';
+    }).catch(err => {
+      console.log('Error attempting to enable fullscreen:', err.message);
+    });
+  } else {
+    // Exit fullscreen
+    document.exitFullscreen().then(() => {
+      icon.className = 'fas fa-expand';
+      btn.innerHTML = '<i class="fas fa-expand"></i> Fullscreen';
+    }).catch(err => {
+      console.log('Error attempting to exit fullscreen:', err.message);
+    });
+  }
+}
+
+// Listen for fullscreen changes (e.g., when user presses ESC)
+document.addEventListener('fullscreenchange', () => {
+  const btn = document.getElementById('fullscreenBtn');
+  const icon = document.getElementById('fullscreenIcon');
+  
+  if (!document.fullscreenElement) {
+    icon.className = 'fas fa-expand';
+    btn.innerHTML = '<i class="fas fa-expand"></i> Fullscreen';
+  } else {
+    icon.className = 'fas fa-compress';
+    btn.innerHTML = '<i class="fas fa-compress"></i> Fullscreen';
+  }
+});
+</script>
+<script src="navigation.js"></script>
+</body>
+</html>
