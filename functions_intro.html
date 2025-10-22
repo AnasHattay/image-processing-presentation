@@ -187,6 +187,142 @@
       -webkit-text-fill-color: transparent;
       background-clip: text;
     }
+    
+    .illustration-container {
+      background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+      border: 3px solid rgba(18, 55, 122, 0.15);
+      border-radius: 20px;
+      padding: 32px;
+      margin: 24px 0;
+      box-shadow: 0 12px 48px rgba(18, 55, 122, 0.12);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .illustration-container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 5px;
+      background: linear-gradient(90deg, #12377A, #1e40af, #3b82f6);
+    }
+    
+    .array-visualization {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+    
+    .array-row {
+      display: flex;
+      gap: 12px;
+    }
+    
+    .pixel-cell {
+      width: 50px;
+      height: 50px;
+      border: 3px solid #12377A;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: bold;
+      color: #12377A;
+      background: linear-gradient(135deg, #f0f4ff 0%, #e6f0ff 100%);
+      transition: all 0.3s ease;
+      position: relative;
+      box-shadow: 0 4px 12px rgba(18, 55, 122, 0.1);
+    }
+    
+    .pixel-cell:hover {
+      transform: scale(1.1);
+      box-shadow: 0 6px 20px rgba(18, 55, 122, 0.2);
+    }
+    
+    .pixel-cell.color-pixel {
+      background: linear-gradient(135deg, #ff6b6b 0%, #ff8e8e 100%);
+      color: white;
+      border-color: #ff4757;
+    }
+    
+    .pixel-cell.gray-pixel {
+      background: linear-gradient(135deg, #666 0%, #888 100%);
+      color: white;
+      border-color: #555;
+    }
+    
+    .dimension-label {
+      font-size: 18px;
+      font-weight: 700;
+      color: #12377A;
+      margin: 12px 0;
+      text-align: center;
+    }
+    
+    .shape-info {
+      background: linear-gradient(135deg, rgba(18, 55, 122, 0.08) 0%, rgba(30, 64, 175, 0.08) 100%);
+      border: 2px solid rgba(18, 55, 122, 0.15);
+      border-radius: 12px;
+      padding: 16px;
+      margin: 16px 0;
+      text-align: center;
+      box-shadow: 0 4px 16px rgba(18, 55, 122, 0.05);
+    }
+    
+    .comparison-arrow {
+      font-size: 24px;
+      color: #12377A;
+      margin: 0 20px;
+      animation: bounce 2s infinite;
+    }
+    
+    @keyframes bounce {
+      0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
+      }
+      40% {
+        transform: translateY(-10px);
+      }
+      60% {
+        transform: translateY(-5px);
+      }
+    }
+    
+    .pixel-explanation {
+      background: linear-gradient(135deg, rgba(18, 55, 122, 0.03) 0%, rgba(30, 64, 175, 0.03) 100%);
+      border-left: 4px solid #12377A;
+      border-radius: 8px;
+      padding: 16px;
+      margin: 16px 0;
+    }
+    
+    .visual-pixel {
+      width: 20px;
+      height: 20px;
+      border: 1px solid #333;
+      transition: all 0.3s ease;
+    }
+    
+    .visual-pixel:hover {
+      transform: scale(1.2);
+      border: 2px solid #12377A;
+      z-index: 10;
+      position: relative;
+    }
+    
+    .code-display {
+      background: #1a1a1a;
+      color: #00ff00;
+      font-family: 'Courier New', monospace;
+      padding: 16px;
+      border-radius: 8px;
+      border: 2px solid #333;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
   </style>
 </head>
 <body>
@@ -205,56 +341,234 @@
     <div class="max-w-6xl w-full relative z-10">
       <div class="text-center mb-16">
         <div class="inline-block">
-          <h1 class="title mb-6">Functions in Python</h1>
+          <h1 class="title mb-6">What is an Image in Python?</h1>
           <div class="decorative-line mb-8"></div>
         </div>
       </div>
       
+      <!-- Visual Illustration Section - Moved to Top -->
+      <div class="mb-16">
+        <div class="illustration-container">
+          <div class="text-center mb-8">
+            <div class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-[#12377A] to-[#1e40af] rounded-full mb-6">
+              <i class="fas fa-eye text-white text-3xl"></i>
+            </div>
+            <h3 class="text-4xl font-bold text-[#12377A] mb-3">Visual Representation</h3>
+            <p class="text-xl text-gray-600 font-light">How Images Look as NumPy Arrays</p>
+          </div>
+          
+          <!-- Real Image Example -->
+          <div class="mb-12">
+            <h4 class="dimension-label text-2xl mb-6">Real Example: A Simple 4×4 Image</h4>
+            <div class="flex flex-col lg:flex-row items-center justify-center gap-12">
+              
+              <!-- What We See (Visual Image) -->
+              <div class="text-center">
+                <h5 class="text-lg font-bold text-[#12377A] mb-4">What We See</h5>
+                <div class="bg-white p-4 rounded-lg shadow-lg border-2 border-gray-200">
+                  <div class="grid grid-cols-4 gap-1 w-32 h-32 mx-auto">
+                    <!-- Row 1 -->
+                    <div class="visual-pixel bg-red-500" title="Red pixel: [255, 0, 0]"></div>
+                    <div class="visual-pixel bg-red-500" title="Red pixel: [255, 0, 0]"></div>
+                    <div class="visual-pixel bg-blue-500" title="Blue pixel: [0, 0, 255]"></div>
+                    <div class="visual-pixel bg-blue-500" title="Blue pixel: [0, 0, 255]"></div>
+                    <!-- Row 2 -->
+                    <div class="visual-pixel bg-red-500" title="Red pixel: [255, 0, 0]"></div>
+                    <div class="visual-pixel bg-red-500" title="Red pixel: [255, 0, 0]"></div>
+                    <div class="visual-pixel bg-blue-500" title="Blue pixel: [0, 0, 255]"></div>
+                    <div class="visual-pixel bg-blue-500" title="Blue pixel: [0, 0, 255]"></div>
+                    <!-- Row 3 -->
+                    <div class="visual-pixel bg-green-500" title="Green pixel: [0, 255, 0]"></div>
+                    <div class="visual-pixel bg-green-500" title="Green pixel: [0, 255, 0]"></div>
+                    <div class="visual-pixel bg-yellow-500" title="Yellow pixel: [255, 255, 0]"></div>
+                    <div class="visual-pixel bg-yellow-500" title="Yellow pixel: [255, 255, 0]"></div>
+                    <!-- Row 4 -->
+                    <div class="visual-pixel bg-green-500" title="Green pixel: [0, 255, 0]"></div>
+                    <div class="visual-pixel bg-green-500" title="Green pixel: [0, 255, 0]"></div>
+                    <div class="visual-pixel bg-yellow-500" title="Yellow pixel: [255, 255, 0]"></div>
+                    <div class="visual-pixel bg-yellow-500" title="Yellow pixel: [255, 255, 0]"></div>
+                  </div>
+                </div>
+                <p class="text-sm text-gray-600 mt-2">4×4 pixel image</p>
+              </div>
+              
+              <!-- Arrow -->
+              <div class="text-3xl text-[#12377A]">
+                <i class="fas fa-arrow-right"></i>
+              </div>
+              
+              <!-- What Python Sees (Array) -->
+              <div class="text-center">
+                <h5 class="text-lg font-bold text-[#12377A] mb-4">What Python Sees</h5>
+                <div class="code-display">
+                  <div class="text-green-400 font-mono text-sm">
+                    <div>array([[[255, 0, 0], [255, 0, 0], [0, 0, 255], [0, 0, 255]],</div>
+                    <div>       [[255, 0, 0], [255, 0, 0], [0, 0, 255], [0, 0, 255]],</div>
+                    <div>       [[0, 255, 0], [0, 255, 0], [255, 255, 0], [255, 255, 0]],</div>
+                    <div>       [[0, 255, 0], [0, 255, 0], [255, 255, 0], [255, 255, 0]]])</div>
+                  </div>
+                </div>
+                <p class="text-sm text-gray-600 mt-2">Shape: (4, 4, 3)</p>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Detailed Pixel Breakdown -->
+          <div class="mb-12">
+            <h4 class="dimension-label text-xl mb-6">Pixel-by-Pixel Breakdown</h4>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              
+              <!-- Color Image Array -->
+              <div class="array-visualization">
+                <h5 class="text-lg font-bold text-[#12377A] mb-4">Color Image Array</h5>
+                <div class="shape-info">
+                  <strong>Shape: (4, 4, 3)</strong><br>
+                  <small>4 rows × 4 columns × 3 RGB channels</small>
+                </div>
+                
+                <!-- 4x4 Color pixel grid -->
+                <div class="space-y-2">
+                  <div class="array-row">
+                    <div class="pixel-cell" style="background: linear-gradient(135deg, #ff6b6b, #ff8e8e); color: white;">R</div>
+                    <div class="pixel-cell" style="background: linear-gradient(135deg, #ff6b6b, #ff8e8e); color: white;">R</div>
+                    <div class="pixel-cell" style="background: linear-gradient(135deg, #4dabf7, #74c0fc); color: white;">B</div>
+                    <div class="pixel-cell" style="background: linear-gradient(135deg, #4dabf7, #74c0fc); color: white;">B</div>
+                  </div>
+                  <div class="array-row">
+                    <div class="pixel-cell" style="background: linear-gradient(135deg, #ff6b6b, #ff8e8e); color: white;">R</div>
+                    <div class="pixel-cell" style="background: linear-gradient(135deg, #ff6b6b, #ff8e8e); color: white;">R</div>
+                    <div class="pixel-cell" style="background: linear-gradient(135deg, #4dabf7, #74c0fc); color: white;">B</div>
+                    <div class="pixel-cell" style="background: linear-gradient(135deg, #4dabf7, #74c0fc); color: white;">B</div>
+                  </div>
+                  <div class="array-row">
+                    <div class="pixel-cell" style="background: linear-gradient(135deg, #51cf66, #69db7c); color: white;">G</div>
+                    <div class="pixel-cell" style="background: linear-gradient(135deg, #51cf66, #69db7c); color: white;">G</div>
+                    <div class="pixel-cell" style="background: linear-gradient(135deg, #ffd43b, #ffec99); color: #333;">Y</div>
+                    <div class="pixel-cell" style="background: linear-gradient(135deg, #ffd43b, #ffec99); color: #333;">Y</div>
+                  </div>
+                  <div class="array-row">
+                    <div class="pixel-cell" style="background: linear-gradient(135deg, #51cf66, #69db7c); color: white;">G</div>
+                    <div class="pixel-cell" style="background: linear-gradient(135deg, #51cf66, #69db7c); color: white;">G</div>
+                    <div class="pixel-cell" style="background: linear-gradient(135deg, #ffd43b, #ffec99); color: #333;">Y</div>
+                    <div class="pixel-cell" style="background: linear-gradient(135deg, #ffd43b, #ffec99); color: #333;">Y</div>
+                  </div>
+                </div>
+                
+                <div class="pixel-explanation">
+                  <strong>Each pixel = [R, G, B] values:</strong><br>
+                  • R = [255, 0, 0] (Red)<br>
+                  • G = [0, 255, 0] (Green)<br>
+                  • B = [0, 0, 255] (Blue)<br>
+                  • Y = [255, 255, 0] (Yellow)
+                </div>
+              </div>
+              
+              <!-- Grayscale Conversion -->
+              <div class="array-visualization">
+                <h5 class="text-lg font-bold text-[#12377A] mb-4">Grayscale Conversion</h5>
+                <div class="shape-info">
+                  <strong>Shape: (4, 4)</strong><br>
+                  <small>4 rows × 4 columns (single channel)</small>
+                </div>
+                
+                <!-- 4x4 Grayscale pixel grid -->
+                <div class="space-y-2">
+                  <div class="array-row">
+                    <div class="pixel-cell gray-pixel">76</div>
+                    <div class="pixel-cell gray-pixel">76</div>
+                    <div class="pixel-cell gray-pixel">29</div>
+                    <div class="pixel-cell gray-pixel">29</div>
+                  </div>
+                  <div class="array-row">
+                    <div class="pixel-cell gray-pixel">76</div>
+                    <div class="pixel-cell gray-pixel">76</div>
+                    <div class="pixel-cell gray-pixel">29</div>
+                    <div class="pixel-cell gray-pixel">29</div>
+                  </div>
+                  <div class="array-row">
+                    <div class="pixel-cell gray-pixel">150</div>
+                    <div class="pixel-cell gray-pixel">150</div>
+                    <div class="pixel-cell gray-pixel">226</div>
+                    <div class="pixel-cell gray-pixel">226</div>
+                  </div>
+                  <div class="array-row">
+                    <div class="pixel-cell gray-pixel">150</div>
+                    <div class="pixel-cell gray-pixel">150</div>
+                    <div class="pixel-cell gray-pixel">226</div>
+                    <div class="pixel-cell gray-pixel">226</div>
+                  </div>
+                </div>
+                
+                <div class="pixel-explanation">
+                  <strong>Grayscale formula:</strong><br>
+                  Gray = 0.299×R + 0.587×G + 0.114×B<br><br>
+                  <strong>Examples:</strong><br>
+                  • Red [255,0,0] → 76<br>
+                  • Green [0,255,0] → 150<br>
+                  • Yellow [255,255,0] → 226
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="mt-12 text-center">
+            <div class="inline-block bg-gradient-to-r from-blue-50 to-indigo-50 border-2 border-blue-200 rounded-xl px-8 py-4">
+              <p class="text-lg text-gray-700 font-semibold">
+                <i class="fas fa-lightbulb text-yellow-500 mr-2"></i>
+                <strong>Key Insight:</strong> An image is just a 2D or 3D array of numbers representing pixel intensities!
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <!-- Left Column: What is a Function -->
+        <!-- Left Column: Image as Array -->
         <div class="space-y-6">
           <div>
-            <h2 class="subtitle">What is a Function?</h2>
+            <h2 class="subtitle">Image as NumPy Array</h2>
             <p class="body-text">
-              A <span class="highlight">function</span> is a reusable block of code that performs a specific task.
+              In Python, an <span class="highlight">image</span> is represented as a multidimensional NumPy array.
             </p>
           </div>
           
           <div class="example-box">
             <div class="flex items-center mb-6">
               <div class="w-3 h-3 bg-gradient-to-r from-[#12377A] to-[#1e40af] rounded-full mr-3"></div>
-              <h3 class="text-2xl font-bold text-[#12377A]">Simple Example</h3>
+              <h3 class="text-2xl font-bold text-[#12377A]">Array Shape</h3>
             </div>
               <div class="code-block">
-                <span class="code-line">def greet(name):</span>
-                <span class="code-line indent-1">return f"Hello, {name}!"</span>
+                <span class="code-line">import numpy as np</span>
+                <span class="code-line">import cv2</span>
                 <span class="code-line"></span>
-                <span class="code-line">message = greet("Alice")</span>
-                <span class="code-line">print(message)</span>
+                <span class="code-line"># Load image</span>
+                <span class="code-line">image = cv2.imread('photo.jpg')</span>
+                <span class="code-line">print(image.shape)</span>
+                <span class="code-line"># Output: (height, width, channels)</span>
               </div>
           </div>
         </div>
         
-        <!-- Right Column: Goals and Benefits -->
+        <!-- Right Column: Image Types -->
         <div class="space-y-6">
           <div>
-            <h2 class="subtitle">Goals of Functions</h2>
+            <h2 class="subtitle">Image Types</h2>
             <div class="space-y-4">
               <div class="benefit-item">
-                <i class="fas fa-repeat benefit-icon"></i>
-                <span><strong>Reusability:</strong> Write once, use many times</span>
+                <i class="fas fa-image benefit-icon"></i>
+                <span><strong>Color Image:</strong> Shape (H, W, 3) - RGB channels</span>
               </div>
               <div class="benefit-item">
-                <i class="fas fa-puzzle-piece benefit-icon"></i>
-                <span><strong>Modularity:</strong> Break complex problems into smaller parts</span>
+                <i class="fas fa-adjust benefit-icon"></i>
+                <span><strong>Grayscale:</strong> Shape (H, W) - Single channel</span>
               </div>
               <div class="benefit-item">
-                <i class="fas fa-bug benefit-icon"></i>
-                <span><strong>Debugging:</strong> Easier to test and fix issues</span>
+                <i class="fas fa-layer-group benefit-icon"></i>
+                <span><strong>Pixel Values:</strong> 0-255 for uint8, 0-1 for float</span>
               </div>
               <div class="benefit-item">
-                <i class="fas fa-code benefit-icon"></i>
-                <span><strong>Readability:</strong> Code becomes more organized and clear</span>
+                <i class="fas fa-cube benefit-icon"></i>
+                <span><strong>Data Type:</strong> uint8, float32, or float64</span>
               </div>
             </div>
           </div>
@@ -262,12 +576,14 @@
           <div class="example-box">
             <div class="flex items-center mb-6">
               <div class="w-3 h-3 bg-gradient-to-r from-[#12377A] to-[#1e40af] rounded-full mr-3"></div>
-              <h3 class="text-2xl font-bold text-[#12377A]">Function Definition Syntax</h3>
+              <h3 class="text-2xl font-bold text-[#12377A]">Image Properties</h3>
             </div>
               <div class="code-block">
-                <span class="code-line">def function_name(parameters):</span>
-                <span class="code-line indent-1"># Function body</span>
-                <span class="code-line indent-1">return result</span>
+                <span class="code-line"># Color image: (480, 640, 3)</span>
+                <span class="code-line"># Grayscale: (480, 640)</span>
+                <span class="code-line">print(image.dtype)  # uint8</span>
+                <span class="code-line">print(image.min())  # 0</span>
+                <span class="code-line">print(image.max())  # 255</span>
               </div>
           </div>
         </div>
@@ -278,20 +594,23 @@
         <div class="example-box">
           <div class="text-center mb-8">
             <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-[#12377A] to-[#1e40af] rounded-full mb-4">
-              <i class="fas fa-code text-white text-2xl"></i>
+              <i class="fas fa-image text-white text-2xl"></i>
             </div>
-            <h3 class="text-3xl font-bold text-[#12377A] mb-2">Real-World Example</h3>
-            <p class="text-lg text-gray-600 font-light">Data Processing with Functions</p>
+            <h3 class="text-3xl font-bold text-[#12377A] mb-2">Example</h3>
+            <p class="text-lg text-gray-600 font-light">Loading and Converting Images</p>
           </div>
             <div class="code-block">
-             <span class="code-line">def calculate_average(numbers):</span>
-             <span class="code-line indent-1">if not numbers:</span>
-             <span class="code-line indent-2">return 0</span>
-             <span class="code-line indent-1">return sum(numbers) / len(numbers)</span>
+             <span class="code-line"># Load color image</span>
+             <span class="code-line">color_img = cv2.imread('photo.jpg')</span>
+             <span class="code-line">print(f"Color shape: {color_img.shape}")</span>
              <span class="code-line"></span>
-             <span class="code-line">scores = [85, 92, 78, 96, 88]</span>
-             <span class="code-line">average_score = calculate_average(scores)</span>
-             <span class="code-line">print(f"Average score: {average_score}")</span>
+             <span class="code-line"># Convert to grayscale</span>
+             <span class="code-line">gray_img = cv2.cvtColor(color_img, cv2.COLOR_BGR2GRAY)</span>
+             <span class="code-line">print(f"Grayscale shape: {gray_img.shape}")</span>
+             <span class="code-line"></span>
+             <span class="code-line"># Access pixel values</span>
+             <span class="code-line">pixel_value = gray_img[100, 200]  # (row, col)</span>
+             <span class="code-line">print(f"Pixel at (100,200): {pixel_value}")</span>
             </div>
         </div>
       </div>
