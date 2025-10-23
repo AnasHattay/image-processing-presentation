@@ -951,159 +951,22 @@
             <div class="filter-effect">Smooths/blurs image</div>
           </div>
           
-          <!-- Sharpen -->
-          <div class="filter-card">
-            <div class="filter-name">Sharpen</div>
-            <div class="filter-matrix">
-              <div class="filter-cell">0</div>
-              <div class="filter-cell">-1</div>
-              <div class="filter-cell">0</div>
-              <div class="filter-cell">-1</div>
-              <div class="filter-cell">5</div>
-              <div class="filter-cell">-1</div>
-              <div class="filter-cell">0</div>
-              <div class="filter-cell">-1</div>
-              <div class="filter-cell">0</div>
-            </div>
-            <div class="filter-effect">Enhances edges</div>
-          </div>
-          
-          <!-- Emboss -->
-          <div class="filter-card">
-            <div class="filter-name">Emboss</div>
-            <div class="filter-matrix">
-              <div class="filter-cell">-2</div>
-              <div class="filter-cell">-1</div>
-              <div class="filter-cell">0</div>
-              <div class="filter-cell">-1</div>
-              <div class="filter-cell">1</div>
-              <div class="filter-cell">1</div>
-              <div class="filter-cell">0</div>
-              <div class="filter-cell">1</div>
-              <div class="filter-cell">2</div>
-            </div>
-            <div class="filter-effect">Creates 3D effect</div>
-          </div>
         </div>
       </div>
       
-      <!-- Detailed Filter Comparison -->
+      <!-- Edge Detection Example -->
       <div class="mb-16">
-        <h2 class="subtitle text-center mb-8">Detailed Filter Effects</h2>
-        
-        <!-- Edge Detection Comparison -->
-        <div class="filter-effect-demo">
-          <h3 class="text-2xl font-bold text-[#12377A] mb-6 text-center">Edge Detection Filters</h3>
-          <div class="grid grid-cols-3 gap-6">
-            <div class="comparison-image">
-              <img src="1000_F_60785346_69nZFRuPLRgLoH1GwiqaA0vEedJgAAl6.jpg" alt="Original">
-              <div class="comparison-label">Original Image</div>
-            </div>
-            <div class="comparison-image">
-              <img src="1000_F_60785346_69nZFRuPLRgLoH1GwiqaA0vEedJgAAl6.jpg" alt="Grayscale" style="filter: grayscale(100%);">
-              <div class="comparison-label">Grayscale</div>
-            </div>
-            <div class="comparison-image">
-              <img src="1000_F_60785346_69nZFRuPLRgLoH1GwiqaA0vEedJgAAl6.jpg" alt="Edge Detection" style="filter: grayscale(100%) contrast(3) brightness(0.2);">
-              <div class="comparison-label">Edge Detection (Laplacian)</div>
-            </div>
-          </div>
-          <p class="text-center text-gray-600 mt-4">
-            <strong>Process:</strong> Original → Grayscale → Edge Detection. The Laplacian filter highlights all edges in the grayscale image, making the brick boundaries and plaster edges clearly visible.
-          </p>
-        </div>
-        
-        <!-- Blur vs Sharpen Comparison -->
-        <div class="filter-effect-demo">
-          <h3 class="text-2xl font-bold text-[#12377A] mb-6 text-center">Blur vs Sharpen</h3>
-          <div class="grid grid-cols-3 gap-6">
-            <div class="comparison-image">
-              <img src="1000_F_60785346_69nZFRuPLRgLoH1GwiqaA0vEedJgAAl6.jpg" alt="Grayscale" style="filter: grayscale(100%);">
-              <div class="comparison-label">Grayscale</div>
-            </div>
-            <div class="comparison-image">
-              <img src="1000_F_60785346_69nZFRuPLRgLoH1GwiqaA0vEedJgAAl6.jpg" alt="Blurred" style="filter: grayscale(100%) blur(4px);">
-              <div class="comparison-label">Gaussian Blur</div>
-            </div>
-            <div class="comparison-image">
-              <img src="1000_F_60785346_69nZFRuPLRgLoH1GwiqaA0vEedJgAAl6.jpg" alt="Sharpened" style="filter: grayscale(100%) contrast(1.8) brightness(1.2);">
-              <div class="comparison-label">Sharpened</div>
-            </div>
-          </div>
-          <p class="text-center text-gray-600 mt-4">
-            <strong>Process:</strong> Grayscale → Filter Application. Blur smooths textures and reduces noise, while sharpening enhances edges and increases detail visibility.
+        <h2 class="subtitle text-center mb-8">Edge Detection in Action</h2>
+        <div class="text-center">
+          <img src="EdgeDetection.png" alt="Edge Detection Comparison" class="rounded-lg shadow-lg max-w-4xl mx-auto" style="max-height: 500px; object-fit: contain;">
+          <p class="text-gray-600 mt-4 max-w-3xl mx-auto">
+            <strong>Real Example:</strong> Stained-glass window processed with different edge detection filters. 
+            Notice how each filter highlights different types of edges - Laplacian detects all edges, 
+            Sobel X emphasizes vertical edges, and Sobel Y emphasizes horizontal edges.
           </p>
         </div>
       </div>
       
-      <!-- Image Effects Examples -->
-      <div class="mb-16">
-        <h2 class="subtitle text-center mb-8">All Filter Effects</h2>
-        <div class="image-examples">
-          <div class="image-example">
-            <img src="1000_F_60785346_69nZFRuPLRgLoH1GwiqaA0vEedJgAAl6.jpg" alt="Original Image" class="w-full h-32 object-cover rounded-lg border-2 border-gray-200">
-            <div class="image-label">Original Image</div>
-          </div>
-          <div class="image-example">
-            <img src="1000_F_60785346_69nZFRuPLRgLoH1GwiqaA0vEedJgAAl6.jpg" alt="Grayscale" class="w-full h-32 object-cover rounded-lg border-2 border-gray-200" style="filter: grayscale(100%);">
-            <div class="image-label">Grayscale</div>
-          </div>
-          <div class="image-example">
-            <img src="1000_F_60785346_69nZFRuPLRgLoH1GwiqaA0vEedJgAAl6.jpg" alt="Sobel X Filter" class="w-full h-32 object-cover rounded-lg border-2 border-gray-200" style="filter: grayscale(100%) contrast(2) brightness(0.5);">
-            <div class="image-label">Sobel X (Vertical Edges)</div>
-          </div>
-          <div class="image-example">
-            <img src="1000_F_60785346_69nZFRuPLRgLoH1GwiqaA0vEedJgAAl6.jpg" alt="Sobel Y Filter" class="w-full h-32 object-cover rounded-lg border-2 border-gray-200" style="filter: grayscale(100%) contrast(2) brightness(0.5);">
-            <div class="image-label">Sobel Y (Horizontal Edges)</div>
-          </div>
-          <div class="image-example">
-            <img src="1000_F_60785346_69nZFRuPLRgLoH1GwiqaA0vEedJgAAl6.jpg" alt="Laplacian Filter" class="w-full h-32 object-cover rounded-lg border-2 border-gray-200" style="filter: grayscale(100%) contrast(3) brightness(0.3);">
-            <div class="image-label">Laplacian (All Edges)</div>
-          </div>
-          <div class="image-example">
-            <img src="1000_F_60785346_69nZFRuPLRgLoH1GwiqaA0vEedJgAAl6.jpg" alt="Gaussian Blur" class="w-full h-32 object-cover rounded-lg border-2 border-gray-200" style="filter: grayscale(100%) blur(3px);">
-            <div class="image-label">Gaussian Blur</div>
-          </div>
-          <div class="image-example">
-            <img src="1000_F_60785346_69nZFRuPLRgLoH1GwiqaA0vEedJgAAl6.jpg" alt="Sharpen Filter" class="w-full h-32 object-cover rounded-lg border-2 border-gray-200" style="filter: grayscale(100%) contrast(1.5) brightness(1.1);">
-            <div class="image-label">Sharpen</div>
-          </div>
-        </div>
-      </div>
-      
-      <!-- Code Example -->
-      <div class="example-box">
-        <div class="text-center mb-8">
-          <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-[#12377A] to-[#1e40af] rounded-full mb-4">
-            <i class="fas fa-code text-white text-2xl"></i>
-          </div>
-          <h3 class="text-3xl font-bold text-[#12377A] mb-2">Python Implementation</h3>
-          <p class="text-lg text-gray-600 font-light">Applying Convolution Filters with OpenCV</p>
-        </div>
-        <div class="code-block">
-          <span class="code-line">import cv2</span>
-          <span class="code-line">import numpy as np</span>
-          <span class="code-line"></span>
-          <span class="code-line"># Load image</span>
-          <span class="code-line">image = cv2.imread('1000_F_60785346_69nZFRuPLRgLoH1GwiqaA0vEedJgAAl6.jpg', cv2.IMREAD_GRAYSCALE)</span>
-          <span class="code-line"></span>
-          <span class="code-line"># Define filters</span>
-          <span class="code-line">sobel_x = np.array([[-1, 0, 1], [-2, 0, 2], [-1, 0, 1]])</span>
-          <span class="code-line">sobel_y = np.array([[-1, -2, -1], [0, 0, 0], [1, 2, 1]])</span>
-          <span class="code-line">laplacian = np.array([[0, -1, 0], [-1, 4, -1], [0, -1, 0]])</span>
-          <span class="code-line"></span>
-          <span class="code-line"># Apply convolution</span>
-          <span class="code-line">edges_x = cv2.filter2D(image, -1, sobel_x)</span>
-          <span class="code-line">edges_y = cv2.filter2D(image, -1, sobel_y)</span>
-          <span class="code-line">edges_all = cv2.filter2D(image, -1, laplacian)</span>
-          <span class="code-line"></span>
-          <span class="code-line"># Display results</span>
-          <span class="code-line">cv2.imshow('Original', image)</span>
-          <span class="code-line">cv2.imshow('Sobel X', edges_x)</span>
-          <span class="code-line">cv2.imshow('Sobel Y', edges_y)</span>
-          <span class="code-line">cv2.imshow('Laplacian', edges_all)</span>
-        </div>
-      </div>
       
     </div>
   </div>

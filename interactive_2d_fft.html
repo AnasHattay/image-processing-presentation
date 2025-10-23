@@ -1,0 +1,1060 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@400;500;600;700&display=swap');
+    
+    .slide-container {
+      width: 100vw;
+      min-height: 100vh;
+      background: #F2F9FC;
+      color: #858481;
+      font-family: 'SF Pro Display', sans-serif;
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+    }
+    .title {
+      color: #12377A;
+      font-size: 72px;
+      font-weight: 800;
+      font-family: 'Inter', sans-serif;
+      text-shadow: 0 4px 8px rgba(18, 55, 122, 0.15);
+      letter-spacing: -0.03em;
+      background: linear-gradient(135deg, #12377A 0%, #1e40af 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: titleGlow 3s ease-in-out infinite alternate;
+    }
+    @keyframes titleGlow {
+      0% { filter: brightness(1); }
+      100% { filter: brightness(1.1); }
+    }
+    .subtitle {
+      color: #12377A;
+      font-size: 42px;
+      font-weight: 700;
+      font-family: 'Inter', sans-serif;
+      letter-spacing: -0.02em;
+      margin-bottom: 24px;
+      position: relative;
+    }
+    .subtitle::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 0;
+      width: 60px;
+      height: 3px;
+      background: linear-gradient(90deg, #12377A, #1e40af);
+      border-radius: 2px;
+    }
+    .body-text {
+      font-size: 26px;
+      line-height: 1.7;
+      margin-bottom: 24px;
+      color: #4a5568;
+      font-weight: 400;
+    }
+    .code-line {
+      display: block;
+      margin-bottom: 8px;
+      white-space: pre;
+    }
+    .code-line:last-child {
+      margin-bottom: 0;
+    }
+    .code-line.indent-1 {
+      padding-left: 20px;
+    }
+    .code-line.indent-2 {
+      padding-left: 40px;
+    }
+    .code-line.indent-3 {
+      padding-left: 60px;
+    }
+    .highlight {
+      background: linear-gradient(135deg, rgba(18, 55, 122, 0.15) 0%, rgba(30, 64, 175, 0.15) 100%);
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-weight: 700;
+      color: #12377A;
+      border: 1px solid rgba(18, 55, 122, 0.2);
+    }
+    .decorative-line {
+      width: 120px;
+      height: 3px;
+      background: linear-gradient(90deg, #12377A, #1e40af);
+      border-radius: 2px;
+      margin: 0 auto 30px;
+    }
+    .fullscreen-btn {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background-color: rgba(18, 55, 122, 0.9);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 12px 16px;
+      cursor: pointer;
+      font-size: 16px;
+      z-index: 1000;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+    .fullscreen-btn:hover {
+      background-color: rgba(18, 55, 122, 1);
+      transform: scale(1.05);
+    }
+    .fullscreen-btn:active {
+      transform: scale(0.95);
+    }
+    .example-box {
+      background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+      border: 1px solid rgba(18, 55, 122, 0.1);
+      border-radius: 16px;
+      padding: 32px;
+      margin: 28px 0;
+      box-shadow: 0 12px 40px rgba(18, 55, 122, 0.08);
+      position: relative;
+      overflow: hidden;
+    }
+    .example-box::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #12377A, #1e40af, #3b82f6);
+    }
+    .benefit-item {
+      display: flex;
+      align-items: center;
+      margin: 20px 0;
+      font-size: 22px;
+      padding: 16px 20px;
+      background: linear-gradient(135deg, rgba(18, 55, 122, 0.03) 0%, rgba(30, 64, 175, 0.03) 100%);
+      border-radius: 12px;
+      border: 1px solid rgba(18, 55, 122, 0.08);
+      transition: all 0.3s ease;
+    }
+    .benefit-item:hover {
+      background: linear-gradient(135deg, rgba(18, 55, 122, 0.08) 0%, rgba(30, 64, 175, 0.08) 100%);
+      transform: translateX(8px);
+      box-shadow: 0 4px 16px rgba(18, 55, 122, 0.1);
+    }
+    .benefit-icon {
+      color: #12377A;
+      margin-right: 20px;
+      font-size: 28px;
+      background: linear-gradient(135deg, #12377A, #1e40af);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .interactive-demo {
+      background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+      border: 3px solid rgba(18, 55, 122, 0.15);
+      border-radius: 20px;
+      padding: 32px;
+      margin: 24px 0;
+      box-shadow: 0 12px 48px rgba(18, 55, 122, 0.12);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .interactive-demo::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 5px;
+      background: linear-gradient(90deg, #12377A, #1e40af, #3b82f6);
+    }
+    
+    
+    .code-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: #12377A;
+      margin-bottom: 16px;
+      text-align: center;
+    }
+    
+    
+    .main-content-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+      margin: 24px 0;
+      align-items: stretch;
+    }
+    
+    .code-column {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+    
+    .images-column {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+    }
+    
+    .code-section {
+      background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+      border: 2px solid rgba(18, 55, 122, 0.1);
+      border-radius: 16px;
+      padding: 24px;
+      margin: 0;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .code-block {
+      background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+      color: #e8e8e8;
+      padding: 28px;
+      border-radius: 12px;
+      font-family: 'SF Mono', 'Monaco', 'Cascadia Code', 'Roboto Mono', monospace;
+      font-size: 18px;
+      line-height: 1.6;
+      margin: 24px 0;
+      overflow-x: auto;
+      border: 1px solid rgba(18, 55, 122, 0.2);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      position: relative;
+      flex: 1;
+      overflow-y: auto;
+      max-height: 600px;
+    }
+    
+    .code-block::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #12377A, #1e40af, #3b82f6);
+      border-radius: 12px 12px 0 0;
+    }
+    
+    .scroll-indicator {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: rgba(18, 55, 122, 0.8);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      transition: all 0.3s ease;
+      z-index: 10;
+    }
+    
+    .scroll-indicator:hover {
+      background: rgba(18, 55, 122, 1);
+      transform: scale(1.1);
+    }
+    
+    .scroll-indicator:active {
+      transform: scale(0.95);
+    }
+    
+    .editable-code {
+      font-family: 'SF Mono', 'Monaco', 'Cascadia Code', 'Roboto Mono', monospace;
+      font-size: 18px;
+      line-height: 1.6;
+      color: #e8e8e8;
+      white-space: pre;
+      outline: none;
+      min-height: 400px;
+      padding: 0;
+      margin: 0;
+    }
+    
+    .editable-code:focus {
+      outline: none;
+    }
+    
+    .editable-code::selection {
+      background: rgba(18, 55, 122, 0.3);
+    }
+    
+    .code-block:focus-within {
+      border-color: rgba(18, 55, 122, 0.4);
+      box-shadow: 0 0 0 3px rgba(18, 55, 122, 0.1);
+    }
+    
+    .visualization-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      margin: 0;
+      width: 100%;
+    }
+    
+    .visualization-item {
+      text-align: center;
+      width: 100%;
+    }
+    
+    .visualization-canvas {
+      width: 100%;
+      max-width: 400px;
+      height: 300px;
+      border: 3px solid rgba(18, 55, 122, 0.1);
+      border-radius: 12px;
+      background: #f8fafc;
+      margin: 0 auto;
+    }
+    
+    .parameter-input {
+      background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+      border: 2px solid rgba(18, 55, 122, 0.2);
+      border-radius: 6px;
+      padding: 4px 8px;
+      font-family: 'SF Mono', 'Monaco', 'Cascadia Code', 'Roboto Mono', monospace;
+      font-size: 18px;
+      color: #12377A;
+      font-weight: 600;
+      width: 60px;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+    
+    .parameter-input:focus {
+      outline: none;
+      border-color: #12377A;
+      box-shadow: 0 0 0 3px rgba(18, 55, 122, 0.1);
+      background: #ffffff;
+    }
+    
+    .parameter-input:hover {
+      border-color: #1e40af;
+      background: #ffffff;
+    }
+    
+    .visualization-label {
+      font-size: 18px;
+      font-weight: 700;
+      color: #12377A;
+      margin-top: 12px;
+    }
+    
+    .run-button {
+      background: linear-gradient(135deg, #12377A, #1e40af);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 12px 24px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 16px rgba(18, 55, 122, 0.3);
+    }
+    
+    .run-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(18, 55, 122, 0.4);
+    }
+    
+    .run-button:active {
+      transform: translateY(0);
+    }
+    
+    .run-button:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 1200px) {
+      .main-content-grid {
+        grid-template-columns: 1fr;
+        gap: 24px;
+      }
+      
+      .visualization-canvas {
+        max-width: 500px;
+        height: 350px;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .title {
+        font-size: 48px;
+      }
+      
+      .subtitle {
+        font-size: 32px;
+      }
+      
+      .body-text {
+        font-size: 20px;
+      }
+      
+      .visualization-canvas {
+        max-width: 400px;
+        height: 300px;
+      }
+    }
+    
+  </style>
+</head>
+<body>
+  <button class="fullscreen-btn" id="fullscreenBtn" onclick="toggleFullscreen()">
+    <i class="fas fa-expand" id="fullscreenIcon"></i> Fullscreen
+  </button>
+  
+  <div class="slide-container flex flex-col items-center justify-center p-10 relative">
+    <!-- Background decorative elements -->
+    <div class="absolute top-20 left-20 w-32 h-32 rounded-full bg-gradient-to-br from-blue-100 to-blue-200 opacity-20 animate-pulse"></div>
+    <div class="absolute bottom-20 right-20 w-24 h-24 rounded-full bg-gradient-to-br from-blue-200 to-blue-300 opacity-30 animate-pulse" style="animation-delay: 1s;"></div>
+    <div class="absolute top-1/3 right-1/4 w-16 h-16 rounded-full bg-gradient-to-br from-blue-50 to-blue-100 opacity-25 animate-pulse" style="animation-delay: 2s;"></div>
+    <div class="absolute top-1/2 left-1/4 w-8 h-8 rounded-full bg-gradient-to-br from-indigo-100 to-indigo-200 opacity-30 animate-pulse" style="animation-delay: 0.5s;"></div>
+    <div class="absolute bottom-1/3 left-1/3 w-12 h-12 rounded-full bg-gradient-to-br from-purple-100 to-purple-200 opacity-20 animate-pulse" style="animation-delay: 1.5s;"></div>
+    
+    <div class="max-w-7xl w-full relative z-10">
+      <div class="text-center mb-16">
+        <div class="inline-block">
+          <h1 class="title mb-6">FFT on Signals (2)</h1>
+          <div class="decorative-line mb-8"></div>
+        </div>
+      </div>
+      
+      <!-- Interactive Demo -->
+      <div class="interactive-demo">
+        <div class="text-center mb-8">
+          <div class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-[#12377A] to-[#1e40af] rounded-full mb-6">
+            <i class="fas fa-code text-white text-3xl"></i>
+          </div>
+        </div>
+        
+        <!-- Main Content: Code Left, Images Right -->
+        <div class="main-content-grid">
+          <!-- Left Side: Code -->
+          <div class="code-column">
+            <div class="code-section">
+              <div class="code-block" id="codeBlock" contenteditable="true" spellcheck="false">
+                <button class="scroll-indicator" onclick="scrollCode()" title="Scroll to bottom">
+                  <i class="fas fa-arrow-down"></i>
+                </button>
+                <div class="editable-code">
+import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib.colors import LinearSegmentedColormap
+
+# Parameters
+freq_x = 3  # Frequency in X direction
+freq_y = 2  # Frequency in Y direction
+amplitude = 1.0  # Wave amplitude
+signal_type = "X"  # Signal type: "X" or "Y"
+
+# Create coordinate grids
+x = np.linspace(0, 2*np.pi, 128)
+y = np.linspace(0, 2*np.pi, 128)
+X, Y = np.meshgrid(x, y)
+
+# Generate 2D sinewave based on signal type
+if signal_type == "X":
+    # Vertical stripes (horizontal frequency)
+    sinewave = amplitude * np.sin(freq_x * X)
+elif signal_type == "Y":
+    # Horizontal stripes (vertical frequency)
+    sinewave = amplitude * np.sin(freq_y * Y)
+
+# Compute 2D FFT
+fft_result = np.fft.fft2(sinewave)
+fft_shifted = np.fft.fftshift(fft_result)
+magnitude_spectrum = np.abs(fft_shifted)
+
+# Display results
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5))
+ax1.imshow(sinewave, cmap='viridis')
+ax1.set_title(f'2D Sinewave ({signal_type})')
+ax2.imshow(np.log(magnitude_spectrum + 1), cmap='viridis')
+ax2.set_title('Magnitude Spectrum (log scale)')
+plt.show()
+                </div>
+              </div>
+              
+              <!-- Run Button -->
+              <div class="text-center mb-4">
+                <button class="run-button" onclick="executeCode()">
+                  <i class="fas fa-play"></i> Run Code
+                </button>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Right Side: Images -->
+          <div class="images-column">
+            <div class="visualization-grid">
+              <div class="visualization-item">
+                <canvas id="sinewaveCanvas" class="visualization-canvas"></canvas>
+                <div class="visualization-label">2D Sinewave Image</div>
+              </div>
+              <div class="visualization-item">
+                <canvas id="spectrumCanvas" class="visualization-canvas"></canvas>
+                <div class="visualization-label">Magnitude Spectrum</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+
+  <!-- Real World Example -->
+  <div class="mb-16">
+    <div class="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
+      <div class="text-center mb-8">
+        <p class="text-lg text-gray-600">Spatial domain vs Frequency domain analysis</p>
+      </div>
+      <div class="text-center">
+        <img src="freq.PNG" alt="Brick Wall Spatial vs Frequency Domain" class="w-full max-w-4xl h-auto rounded-lg shadow-md mx-auto">
+      </div>
+    </div>
+  </div>
+
+<script>
+function toggleFullscreen() {
+  const btn = document.getElementById('fullscreenBtn');
+  const icon = document.getElementById('fullscreenIcon');
+  
+  if (!document.fullscreenElement) {
+    document.documentElement.requestFullscreen().then(() => {
+      icon.className = 'fas fa-compress';
+      btn.innerHTML = '<i class="fas fa-compress"></i> Exit Fullscreen';
+    }).catch(err => {
+      console.log('Error attempting to enable fullscreen:', err.message);
+    });
+  } else {
+    document.exitFullscreen().then(() => {
+      icon.className = 'fas fa-expand';
+      btn.innerHTML = '<i class="fas fa-expand"></i> Fullscreen';
+    }).catch(err => {
+      console.log('Error attempting to exit fullscreen:', err.message);
+    });
+  }
+}
+
+// Listen for fullscreen changes
+document.addEventListener('fullscreenchange', () => {
+  const btn = document.getElementById('fullscreenBtn');
+  const icon = document.getElementById('fullscreenIcon');
+  
+  if (!document.fullscreenElement) {
+    icon.className = 'fas fa-expand';
+    btn.innerHTML = '<i class="fas fa-expand"></i> Fullscreen';
+  } else {
+    icon.className = 'fas fa-compress';
+    btn.innerHTML = '<i class="fas fa-compress"></i> Fullscreen';
+  }
+});
+
+// Interactive FFT Analysis
+let sinewaveCanvas, spectrumCanvas;
+let sinewaveCtx, spectrumCtx;
+
+document.addEventListener('DOMContentLoaded', function() {
+  // Initialize canvases
+  sinewaveCanvas = document.getElementById('sinewaveCanvas');
+  spectrumCanvas = document.getElementById('spectrumCanvas');
+  sinewaveCtx = sinewaveCanvas.getContext('2d');
+  spectrumCtx = spectrumCanvas.getContext('2d');
+  
+  // Set canvas sizes based on container
+  const containerWidth = document.querySelector('.images-column').offsetWidth;
+  const canvasWidth = Math.min(containerWidth, 400);
+  
+  sinewaveCanvas.width = canvasWidth;
+  sinewaveCanvas.height = 300;
+  spectrumCanvas.width = canvasWidth;
+  spectrumCanvas.height = 300;
+  
+  // Generate images automatically
+  generateImages();
+});
+
+function parseCodeParameters() {
+  const codeText = document.querySelector('.editable-code').textContent;
+  
+  // Extract parameters using regex
+  const freqXMatch = codeText.match(/freq_x\s*=\s*(\d+(?:\.\d+)?)/);
+  const freqYMatch = codeText.match(/freq_y\s*=\s*(\d+(?:\.\d+)?)/);
+  const amplitudeMatch = codeText.match(/amplitude\s*=\s*(\d+(?:\.\d+)?)/);
+  const signalTypeMatch = codeText.match(/signal_type\s*=\s*["']([XY])["']/);
+  
+  return {
+    freqX: freqXMatch ? parseFloat(freqXMatch[1]) : 3,
+    freqY: freqYMatch ? parseFloat(freqYMatch[1]) : 2,
+    amplitude: amplitudeMatch ? parseFloat(amplitudeMatch[1]) : 1.0,
+    signalType: signalTypeMatch ? signalTypeMatch[1] : "X"
+  };
+}
+
+function generateImages() {
+  // Get parameters from editable code
+  const params = parseCodeParameters();
+  const size = 128; // Fixed size
+  
+  // Generate 2D sinewave
+  const sinewave = generateSinewave(params.freqX, params.freqY, params.amplitude, size, params.signalType);
+  
+  // Compute magnitude spectrum (simplified)
+  const spectrum = computeMagnitudeSpectrum(sinewave, params.signalType);
+  
+  // Draw visualizations
+  drawSinewave(sinewave);
+  drawSpectrum(spectrum);
+}
+
+function scrollCode() {
+  const codeBlock = document.getElementById('codeBlock');
+  codeBlock.scrollTo({
+    top: codeBlock.scrollHeight,
+    behavior: 'smooth'
+  });
+}
+
+function executeCode() {
+  const button = document.querySelector('.run-button');
+  
+  // Disable button and show executing status
+  button.disabled = true;
+  button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Executing...';
+  
+  // Simulate code execution with steps
+  setTimeout(() => {
+    // Generate new images with animation
+    generateImagesWithAnimation();
+    
+    // Re-enable button
+    button.disabled = false;
+    button.innerHTML = '<i class="fas fa-play"></i> Run Code';
+  }, 1500);
+}
+
+function generateImagesWithAnimation() {
+  // Get parameters from editable code
+  const params = parseCodeParameters();
+  const size = 128; // Fixed size
+  
+  // Generate 2D sinewave
+  const sinewave = generateSinewave(params.freqX, params.freqY, params.amplitude, size, params.signalType);
+  
+  // Compute magnitude spectrum (simplified)
+  const spectrum = computeMagnitudeSpectrum(sinewave, params.signalType);
+  
+  // Draw visualizations with animation
+  drawSinewaveWithAnimation(sinewave);
+  setTimeout(() => {
+    drawSpectrumWithAnimation(spectrum);
+  }, 500);
+}
+
+function drawSinewaveWithAnimation(sinewave) {
+  const size = sinewave.length;
+  const canvasWidth = sinewaveCanvas.width;
+  const canvasHeight = sinewaveCanvas.height;
+  
+  // Clear canvas first
+  sinewaveCtx.clearRect(0, 0, canvasWidth, canvasHeight);
+  
+  // Create off-screen canvas for the full image
+  const offscreenCanvas = document.createElement('canvas');
+  offscreenCanvas.width = size;
+  offscreenCanvas.height = size;
+  const offscreenCtx = offscreenCanvas.getContext('2d');
+  
+  // Draw to off-screen canvas
+  const imageData = offscreenCtx.createImageData(size, size);
+  
+  for (let y = 0; y < size; y++) {
+    for (let x = 0; x < size; x++) {
+      const value = sinewave[y][x];
+      const normalized = (value + 1) / 2; // Convert [-1,1] to [0,1]
+      
+      // Viridis-like colormap: dark purple -> blue -> green -> yellow
+      const r = Math.floor(255 * viridisR(normalized));
+      const g = Math.floor(255 * viridisG(normalized));
+      const b = Math.floor(255 * viridisB(normalized));
+      
+      const index = (y * size + x) * 4;
+      imageData.data[index] = r;     // R
+      imageData.data[index + 1] = g; // G
+      imageData.data[index + 2] = b; // B
+      imageData.data[index + 3] = 255;
+    }
+  }
+  
+  offscreenCtx.putImageData(imageData, 0, 0);
+  
+  // Animate scaling to fit canvas
+  let scale = 0;
+  const animateScale = () => {
+    scale += 0.05;
+    if (scale > 1) scale = 1;
+    
+    sinewaveCtx.clearRect(0, 0, canvasWidth, canvasHeight);
+    
+    // Calculate dimensions to maintain aspect ratio
+    const scaleFactor = Math.min(canvasWidth / size, canvasHeight / size) * scale;
+    const scaledWidth = size * scaleFactor;
+    const scaledHeight = size * scaleFactor;
+    const xOffset = (canvasWidth - scaledWidth) / 2;
+    const yOffset = (canvasHeight - scaledHeight) / 2;
+    
+    sinewaveCtx.drawImage(offscreenCanvas, 0, 0, size, size, 
+                         xOffset, yOffset, scaledWidth, scaledHeight);
+    
+    if (scale < 1) {
+      requestAnimationFrame(animateScale);
+    }
+  };
+  
+  animateScale();
+}
+
+function drawSpectrumWithAnimation(spectrum) {
+  const size = spectrum.length;
+  const canvasWidth = spectrumCanvas.width;
+  const canvasHeight = spectrumCanvas.height;
+  
+  // Clear canvas first
+  spectrumCtx.clearRect(0, 0, canvasWidth, canvasHeight);
+  
+  // Create off-screen canvas for the full image
+  const offscreenCanvas = document.createElement('canvas');
+  offscreenCanvas.width = size;
+  offscreenCanvas.height = size;
+  const offscreenCtx = offscreenCanvas.getContext('2d');
+  
+  // Find max value for normalization
+  let maxVal = 0;
+  for (let y = 0; y < size; y++) {
+    for (let x = 0; x < size; x++) {
+      maxVal = Math.max(maxVal, spectrum[y][x]);
+    }
+  }
+  
+  // Draw to off-screen canvas
+  const imageData = offscreenCtx.createImageData(size, size);
+  
+  for (let y = 0; y < size; y++) {
+    for (let x = 0; x < size; x++) {
+      const value = spectrum[y][x] / maxVal;
+      
+      // Viridis-like colormap for spectrum
+      const r = Math.floor(255 * viridisR(value));
+      const g = Math.floor(255 * viridisG(value));
+      const b = Math.floor(255 * viridisB(value));
+      
+      const index = (y * size + x) * 4;
+      imageData.data[index] = r;     // R
+      imageData.data[index + 1] = g; // G
+      imageData.data[index + 2] = b; // B
+      imageData.data[index + 3] = 255;
+    }
+  }
+  
+  offscreenCtx.putImageData(imageData, 0, 0);
+  
+  // Animate scaling to fit canvas
+  let scale = 0;
+  const animateScale = () => {
+    scale += 0.05;
+    if (scale > 1) scale = 1;
+    
+    spectrumCtx.clearRect(0, 0, canvasWidth, canvasHeight);
+    
+    // Calculate dimensions to maintain aspect ratio
+    const scaleFactor = Math.min(canvasWidth / size, canvasHeight / size) * scale;
+    const scaledWidth = size * scaleFactor;
+    const scaledHeight = size * scaleFactor;
+    const xOffset = (canvasWidth - scaledWidth) / 2;
+    const yOffset = (canvasHeight - scaledHeight) / 2;
+    
+    spectrumCtx.drawImage(offscreenCanvas, 0, 0, size, size, 
+                         xOffset, yOffset, scaledWidth, scaledHeight);
+    
+    if (scale < 1) {
+      requestAnimationFrame(animateScale);
+    }
+  };
+  
+  animateScale();
+}
+
+function generateSinewave(freqX, freqY, amplitude, size, signalType) {
+  const data = [];
+  for (let y = 0; y < size; y++) {
+    const row = [];
+    for (let x = 0; x < size; x++) {
+      let value;
+      
+      if (signalType === "X") {
+        // Vertical stripes (horizontal frequency)
+        value = amplitude * Math.sin(freqX * 2 * Math.PI * x / size);
+      } else if (signalType === "Y") {
+        // Horizontal stripes (vertical frequency)
+        value = amplitude * Math.sin(freqY * 2 * Math.PI * y / size);
+      } else {
+        // Default to X
+        value = amplitude * Math.sin(freqX * 2 * Math.PI * x / size);
+      }
+      
+      row.push(value);
+    }
+    data.push(row);
+  }
+  return data;
+}
+
+function computeMagnitudeSpectrum(sinewave, signalType) {
+  // Simplified FFT simulation - create frequency peaks based on signal type
+  const size = sinewave.length;
+  const spectrum = Array(size).fill().map(() => Array(size).fill(0));
+  
+  const centerX = Math.floor(size / 2);
+  const centerY = Math.floor(size / 2);
+  
+  // Get frequency from editable code
+  const params = parseCodeParameters();
+  const freqX = params.freqX;
+  const freqY = params.freqY;
+  
+  for (let y = 0; y < size; y++) {
+    for (let x = 0; x < size; x++) {
+      const dx = x - centerX;
+      const dy = y - centerY;
+      
+      if (signalType === "X") {
+        // Horizontal frequency peaks (vertical stripes -> horizontal frequency)
+        if (Math.abs(dy) < 2) { // Horizontal line
+          // DC component (center)
+          if (Math.abs(dx) < 2) {
+            spectrum[y][x] = 1.0;
+          }
+          // Positive frequency peak
+          else if (Math.abs(dx - freqX * 10) < 3) {
+            spectrum[y][x] = 0.8;
+          }
+          // Negative frequency peak
+          else if (Math.abs(dx + freqX * 10) < 3) {
+            spectrum[y][x] = 0.8;
+          }
+          // Background noise
+          else {
+            spectrum[y][x] = Math.random() * 0.1;
+          }
+        } else {
+          // Very low background
+          spectrum[y][x] = Math.random() * 0.05;
+        }
+      } else if (signalType === "Y") {
+        // Vertical frequency peaks (horizontal stripes -> vertical frequency)
+        if (Math.abs(dx) < 2) { // Vertical line
+          // DC component (center)
+          if (Math.abs(dy) < 2) {
+            spectrum[y][x] = 1.0;
+          }
+          // Positive frequency peak
+          else if (Math.abs(dy - freqY * 10) < 3) {
+            spectrum[y][x] = 0.8;
+          }
+          // Negative frequency peak
+          else if (Math.abs(dy + freqY * 10) < 3) {
+            spectrum[y][x] = 0.8;
+          }
+          // Background noise
+          else {
+            spectrum[y][x] = Math.random() * 0.1;
+          }
+        } else {
+          // Very low background
+          spectrum[y][x] = Math.random() * 0.05;
+        }
+      }
+    }
+  }
+  
+  return spectrum;
+}
+
+function drawSinewave(sinewave) {
+  const size = sinewave.length;
+  const canvasWidth = sinewaveCanvas.width;
+  const canvasHeight = sinewaveCanvas.height;
+  
+  // Clear canvas
+  sinewaveCtx.clearRect(0, 0, canvasWidth, canvasHeight);
+  
+  // Create off-screen canvas for the full image
+  const offscreenCanvas = document.createElement('canvas');
+  offscreenCanvas.width = size;
+  offscreenCanvas.height = size;
+  const offscreenCtx = offscreenCanvas.getContext('2d');
+  
+  const imageData = offscreenCtx.createImageData(size, size);
+  
+  for (let y = 0; y < size; y++) {
+    for (let x = 0; x < size; x++) {
+      const value = sinewave[y][x];
+      const normalized = (value + 1) / 2; // Convert [-1,1] to [0,1]
+      
+      // Viridis-like colormap: dark purple -> blue -> green -> yellow
+      const r = Math.floor(255 * viridisR(normalized));
+      const g = Math.floor(255 * viridisG(normalized));
+      const b = Math.floor(255 * viridisB(normalized));
+      
+      const index = (y * size + x) * 4;
+      imageData.data[index] = r;     // R
+      imageData.data[index + 1] = g; // G
+      imageData.data[index + 2] = b; // B
+      imageData.data[index + 3] = 255;  // A
+    }
+  }
+  
+  offscreenCtx.putImageData(imageData, 0, 0);
+  
+  // Calculate dimensions to maintain aspect ratio
+  const scaleFactor = Math.min(canvasWidth / size, canvasHeight / size);
+  const scaledWidth = size * scaleFactor;
+  const scaledHeight = size * scaleFactor;
+  const xOffset = (canvasWidth - scaledWidth) / 2;
+  const yOffset = (canvasHeight - scaledHeight) / 2;
+  
+  sinewaveCtx.drawImage(offscreenCanvas, 0, 0, size, size, 
+                       xOffset, yOffset, scaledWidth, scaledHeight);
+}
+
+function viridisR(t) {
+  return 0.267 + 0.004 * t + 0.329 * t * t + 0.4 * t * t * t;
+}
+
+function viridisG(t) {
+  return 0.003 + 0.457 * t + 0.541 * t * t - 0.001 * t * t * t;
+}
+
+function viridisB(t) {
+  return 0.329 + 0.383 * t - 0.712 * t * t;
+}
+
+function drawSpectrum(spectrum) {
+  const size = spectrum.length;
+  const canvasWidth = spectrumCanvas.width;
+  const canvasHeight = spectrumCanvas.height;
+  
+  // Clear canvas
+  spectrumCtx.clearRect(0, 0, canvasWidth, canvasHeight);
+  
+  // Create off-screen canvas for the full image
+  const offscreenCanvas = document.createElement('canvas');
+  offscreenCanvas.width = size;
+  offscreenCanvas.height = size;
+  const offscreenCtx = offscreenCanvas.getContext('2d');
+  
+  // Find max value for normalization
+  let maxVal = 0;
+  for (let y = 0; y < size; y++) {
+    for (let x = 0; x < size; x++) {
+      maxVal = Math.max(maxVal, spectrum[y][x]);
+    }
+  }
+  
+  const imageData = offscreenCtx.createImageData(size, size);
+  
+  for (let y = 0; y < size; y++) {
+    for (let x = 0; x < size; x++) {
+      const value = spectrum[y][x] / maxVal;
+      
+      // Viridis-like colormap for spectrum
+      const r = Math.floor(255 * viridisR(value));
+      const g = Math.floor(255 * viridisG(value));
+      const b = Math.floor(255 * viridisB(value));
+      
+      const index = (y * size + x) * 4;
+      imageData.data[index] = r;     // R
+      imageData.data[index + 1] = g; // G
+      imageData.data[index + 2] = b; // B
+      imageData.data[index + 3] = 255;      // A
+    }
+  }
+  
+  offscreenCtx.putImageData(imageData, 0, 0);
+  
+  // Calculate dimensions to maintain aspect ratio
+  const scaleFactor = Math.min(canvasWidth / size, canvasHeight / size);
+  const scaledWidth = size * scaleFactor;
+  const scaledHeight = size * scaleFactor;
+  const xOffset = (canvasWidth - scaledWidth) / 2;
+  const yOffset = (canvasHeight - scaledHeight) / 2;
+  
+  spectrumCtx.drawImage(offscreenCanvas, 0, 0, size, size, 
+                       xOffset, yOffset, scaledWidth, scaledHeight);
+}
+
+// Handle window resize to maintain proper image sizes
+window.addEventListener('resize', function() {
+  // Recalculate canvas sizes based on container
+  const containerWidth = document.querySelector('.images-column').offsetWidth;
+  const canvasWidth = Math.min(containerWidth, 400);
+  
+  sinewaveCanvas.width = canvasWidth;
+  sinewaveCanvas.height = 300;
+  spectrumCanvas.width = canvasWidth;
+  spectrumCanvas.height = 300;
+  
+  // Regenerate images with new sizes
+  generateImages();
+});
+
+// Add event listeners to editable code for real-time updates
+document.querySelector('.editable-code').addEventListener('input', function() {
+  // Debounce the updates to avoid too frequent regenerations
+  clearTimeout(window.codeUpdateTimeout);
+  window.codeUpdateTimeout = setTimeout(generateImages, 500);
+});
+
+// Add event listeners to editable code for real-time updates
+document.querySelector('.editable-code').addEventListener('keyup', function() {
+  // Immediate update on key release for better responsiveness
+  clearTimeout(window.codeUpdateTimeout);
+  window.codeUpdateTimeout = setTimeout(generateImages, 100);
+});
+
+</script>
+<script src="navigation.js"></script>
+</body>
+</html>
